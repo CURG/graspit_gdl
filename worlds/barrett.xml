@@ -1,0 +1,15 @@
+<?xml version="1.0" ?>
+<world>
+	<robot>
+		<filename>models/robots/Barrett/Barrett.xml</filename>
+		<dofValues>0 0 0 0 0 0 0 0 0 0 </dofValues>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+0 -1.21713 +554.194</position>
+		<orientation>+0 +0 +0 +1</orientation>
+		<focalDistance>+550.17</focalDistance>
+	</camera>
+</world>

@@ -1,0 +1,48 @@
+<?xml version="1.0" ?>
+<world>
+	<graspableBody>
+		<filename>models/object_database/garnier_shampoo_bottle.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</graspableBody>
+	<graspableBody>
+		<filename>models/objects/experiment_table.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +24.3428 +5.87014]</fullTransform>
+		</transform>
+	</graspableBody>
+	<robot>
+		<filename>models/robots/Barrett/Barrett.xml</filename>
+		<dofValues>+0.248968 +1.33255 +0 +0 +1.48005 +0 +0 +1.07567 +0 +0 </dofValues>
+		<transform>
+			<fullTransform>(+0.0292727 -0.712354 +0.693135 +0.106105)[-6.40319 -5.27814 +223.037]</fullTransform>
+		</transform>
+	</robot>
+	<robot>
+		<filename>unspecified</filename>
+		<dofValues>+0 +1.55177 +0 +0 +2.02896 +1 +1.58927 +0 +1.65896 +0 +0 </dofValues>
+		<transform>
+			<fullTransform>(-0.409071 -0.638427 -0.356392 +0.545946)[+4.1989 +25.3114 +158.675]</fullTransform>
+		</transform>
+	</robot>
+	<robot>
+		<filename>unspecified</filename>
+		<dofValues>+3.14159 +1.75591 +0 +0 +1.75591 +0 +0 +1.75591 +0 +0 </dofValues>
+		<transform>
+			<fullTransform>(-0.0523746 -0.067465 +0.197955 +0.976483)[-75.1455 +30.1861 +265.191]</fullTransform>
+		</transform>
+	</robot>
+	<robot>
+		<filename>unspecified</filename>
+		<dofValues>+0.248968 +1.33255 +0 +0 +1.48005 +0 +0 +1.07567 +0 +0 </dofValues>
+		<transform>
+			<fullTransform>(+0.0292727 -0.712354 +0.693135 +0.106105)[-6.40319 -5.27814 +223.037]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+1141.74 +302.268 +395.604</position>
+		<orientation>+0.391734 +0.472758 +0.617568 +0.491583</orientation>
+		<focalDistance>+1135.18</focalDistance>
+	</camera>
+</world>

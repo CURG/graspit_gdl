@@ -1,0 +1,5 @@
+<?xml version="1.0" ?>
+<root>
+	<scale>1000</scale>
+	<geometryFile type="Inventor">mico_finger_distal_link.iv</geometryFile>
+</root>

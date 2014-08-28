@@ -1,0 +1,33 @@
+#!/bin/bash
+#graspit compilation script
+cd qhull
+make
+cd ..
+export GRASPIT=$PWD
+export CGDB_MODEL_ROOT=$GRASPIT/cgdb
+echo $GRASPIT
+echo $CGDB_MODEL_ROOT
+#if libraries are not installed on the standard path variable, add them here.
+#libspaths="\"LIBS+=-L/usr/local/libs
+
+
+#Build rpcz
+if [ -d rpcz ] 
+then
+    cd rpcz
+    if [ ! -e build ]
+    then
+	mkdir build	
+    fi
+    cd build
+    cmake ..
+    make    
+fi
+
+qmake $libspaths ./graspit.pro 
+cd $GRASPIT
+make -j4
+
+
+
+

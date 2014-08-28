@@ -1,0 +1,6 @@
+[submodule "protocols"]
+	path = protocols
+	url = git://github.com/CURG/graspit_protobuf_msgs.git
+[submodule "rpcz"]
+	path = rpcz
+	url = git@github.com:CURG/rpcz.git

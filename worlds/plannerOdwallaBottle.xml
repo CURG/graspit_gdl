@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<world>
+	<graspableBody>
+		<filename>models/object_database/odwalla_bottle.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</graspableBody>
+	<graspableBody>
+		<filename>models/objects/experiment_table.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +12.2357 +2.75091]</fullTransform>
+		</transform>
+	</graspableBody>
+	<robot>
+		<filename>models/robots/Barrett/Barrett.xml</filename>
+		<dofValues>+0 +0 +0 +0 +0 +0 +0 +0 +0 +0 </dofValues>
+		<transform>
+		  <fullTransform>(0 +0 1 +0)[-8.37264e-06 -0.781957 210]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+2789.91 +168.344 +36.6993</position>
+		<orientation>+0.517661 +0.471669 +0.485283 +0.523504</orientation>
+		<focalDistance>+2714.81</focalDistance>
+	</camera>
+</world>

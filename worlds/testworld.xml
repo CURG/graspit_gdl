@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<world>
+	<graspableBody>
+		<filename>models/objects/darpaflashlight.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</graspableBody>
+	<obstacle>
+		<filename>models/objects/experiment_table.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 -115.649]</fullTransform>
+		</transform>
+	</obstacle>
+	<robot>
+		<filename>models/robots/NewBarrett/NewBarrett.xml</filename>
+		<dofValues>+0 +1.75829 +0 +0 +2.17454 +1 +1.71954 +0 +1.85391 +0 +0 </dofValues>
+		<transform>
+			<fullTransform>(-0.603595 +0.231307 +0.762968 +0.00700171)[+53.0495 -10.0717 +38.6053]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+1109.18 -213.825 +551.104</position>
+		<orientation>+0.434435 +0.319909 +0.522183 +0.660491</orientation>
+		<focalDistance>+1257.81</focalDistance>
+	</camera>
+</world>

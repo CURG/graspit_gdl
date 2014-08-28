@@ -1,0 +1,39 @@
+<?xml version="1.0" ?>
+<world>
+	<obstacle>
+		<filename>models/objects/experiment_table.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 -3.49613]</fullTransform>
+		</transform>
+	</obstacle>
+	<graspableBody>
+		<filename>models/object_database/garnier_shampoo_bottle.xml</filename>
+		<transform>
+			<fullTransform>(+0.810493 -0.06623 +0.003444 -0.581982)[-196.315 +343.417 -2.81421]</fullTransform>
+		</transform>
+	</graspableBody>
+	<graspableBody>
+		<filename>models/object_database/garnier_shampoo_bottle.xml</filename>
+		<transform>
+			<fullTransform>(+0.89221 +0.020524 -0.153288 -0.424315)[-131.296 +516.601 +20.0952]</fullTransform>
+		</transform>
+	</graspableBody>
+	<graspableBody>
+		<filename>models/object_database/gillette_shaving_gel.xml</filename>
+		<transform>
+			<fullTransform>(+0.6606 -0.022501 -0.026479 -0.749934)[-355.711 +363.08 -16.9207]</fullTransform>
+		</transform>
+	</graspableBody>
+	<robot>
+		<filename>models/robots/NewBarrett/NewBarrett.xml</filename>
+		<dofValues>+0.905708 +0 +0 +0 +0 +0 +0 +0 +0 +0 </dofValues>
+		<transform>
+			<fullTransform>(+0.00114461 -1.07504e-05 +0.999955 +0.00939181)[-0.686342 -5.63212 +299.801]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>+2709.89 -296.841 -12.1346</position>
+		<orientation>+0.5636 +0.426372 +0.436411 +0.556873</orientation>
+		<focalDistance>+2714.81</focalDistance>
+	</camera>
+</world>

@@ -1,0 +1,27 @@
+<?xml version="1.0" ?>
+<world>
+	<graspableBody>
+		<filename>models/objects/flask.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 +0]</fullTransform>
+		</transform>
+	</graspableBody>
+	<obstacle>
+		<filename>models/objects/experiment_table.xml</filename>
+		<transform>
+			<fullTransform>(+1 +0 +0 +0)[+0 +0 -70.6608]</fullTransform>
+		</transform>
+	</obstacle>
+	<robot>
+		<filename>models/robots/NewBarrett/NewBarrett.xml</filename>
+		<dofValues>+0 +1.19694 +0 +0 +1.21131 +0 +0 +1.13069 +0 +0 </dofValues>
+		<transform>
+			<fullTransform>(+0.0458041 -0.992879 -0.0229076 +0.107556)[+24.7038 -11.4826 +135.986]</fullTransform>
+		</transform>
+	</robot>
+	<camera>
+		<position>-1009.91 +249.442 +210.937</position>
+		<orientation>-0.441627 +0.516542 +0.608057 -0.410385</orientation>
+		<focalDistance>+1154.76</focalDistance>
+	</camera>
+</world>
