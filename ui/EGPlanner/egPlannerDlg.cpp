@@ -63,6 +63,7 @@
 
 //#define GRASPITDBG
 #include "debug.h"
+#include <boost/filesystem.hpp>
 
 
 #include <fstream>
@@ -746,12 +747,24 @@ void EigenGraspPlannerDlg::plannerReset_clicked()
 {
 
   assert(mPlanner);
+
+
+
   resetCount +=1;
   std::stringstream ss;
-  ss << "saved_grasps/saved_grasps_";
+  ss << "saved_grasps/";
+  ss << mPlanner->getTargetState()->getObject()->getName().toStdString().c_str();
+
+  std::string grasp_dir = ss.str();
+
+  ss << "/grasps_";
   ss << resetCount;
   ss << ".txt";
+
   std::string graspFilename = ss.str();
+
+  boost::filesystem3::create_directories(grasp_dir);
+
 
   FILE *f = fopen(graspFilename.c_str(),"w");
   for (int i=0; i<mPlanner->getListSize(); i++)

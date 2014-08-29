@@ -16,6 +16,7 @@ OBJECTS_DIR = .obj
 
 #------------------------------------ add-ons --------------------------------------------
 
+LIBS += -lboost_filesystem -lboost_system
 mosek {
 	error("Mosek linking only tested under Windows")
 }
