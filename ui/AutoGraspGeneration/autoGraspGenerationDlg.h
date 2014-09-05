@@ -23,16 +23,17 @@
 //
 //######################################################################
 
-#ifndef _egplannerdlg_h_
-#define _egplannerdlg_h_
+#ifndef _autograspgenerationdlg_h_
+#define _autograspgenerationdlg_h_
 
 #include <QDialog>
 
-#include "ui_egPlannerDlg.h"
+#include "ui_autoGraspGenerationDlg.h"
 #include "BCI/handViewWindow.h"
 #include <vector>
 #include <QtGui/QShortcut>
 #include "DBase/DBPlanner/sql_database_manager.h"
+#include <math.h>
 
 
 class QGridLayout;
@@ -51,6 +52,7 @@ class EGPlanner;
 class HandViewWindow;
 
 
+Quaternion eulerToQuaternion(double roll, double pitch, double yaw);
 
 
 /*! The EGPlannerDialog can interface to most of the types of EGPlanners, 
@@ -58,10 +60,14 @@ class HandViewWindow;
 	changes to the Input provided to the Planner, etc. This is the primary 
 	way of getting familiar with the various implementations of EGPlanner.
 */
-class EigenGraspPlannerDlg : public QDialog, public Ui::EigenGraspPlannerDlgUI
+class AutoGraspGenerationDlg : public QDialog, public Ui::autoGraspGenerationDlgUI
 {
 	Q_OBJECT
 private:
+  int resetCount;
+  int currentHandPositionIndex;
+  std::vector<vec3> handPositions;
+
   QGridLayout *varGridLayout;
   QVBoxLayout *varMainLayout;
   QShortcut * initShortcut;
@@ -90,17 +96,38 @@ private:
   void loadGraspsToHandviewWindow();
   void initializeDbInterface();
   void initializeHandviewWindow();
+
+
   
 public:
-  EigenGraspPlannerDlg(QWidget *parent = 0) : 
+  AutoGraspGenerationDlg(QWidget *parent = 0) : 
         QDialog(parent)
 
   {
       setupUi(this);
       init();
+      resetCount = 0;
+      currentHandPositionIndex = 0;
+      std::cout<< "adding hand position";
+      double numSteps = 3.0;
+      for(int x_index=-numSteps+1; x_index < numSteps+1; x_index++){
+          double x = x_index / numSteps * 220;
+          for(int y_index=-numSteps+1; y_index < numSteps+1; y_index++){
+              double y = y_index / numSteps * 220;
+              for(int z_index=-numSteps+1; z_index < numSteps+1; z_index++){
+                  double z = z_index / numSteps * 220;
+                  if(abs(x_index)+abs(y_index)+abs(z_index) > 4)
+                  {
+                      std::cout<< "adding hand position:(" << x <<"," << y << ","<< z <<")";
+                      handPositions.push_back(vec3(x,y,z));
+                  }
+              }
+          }
+      }
+
 	}
 	
-    ~EigenGraspPlannerDlg(){destroy();}
+    ~AutoGraspGenerationDlg(){destroy();}
 
 public slots:
 	void exitButton_clicked();
@@ -135,6 +162,7 @@ public slots:
 	void useRealBarrettBox_toggled( bool s);
 	void inputGloveBox_toggled( bool on);
 	void inputLoadButton_clicked();
+    void timerUpdate();
 
 
 

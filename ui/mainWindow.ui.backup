@@ -417,7 +417,6 @@
         <addaction name="graspEigenGrasp_InterfaceAction" />
         <addaction name="graspEigenGrasp_PlannerAction" />
         <addaction name="graspContact_ExaminerAction" />
-        <addaction name="autoGraspGeneration_ExaminerAction" />
       </widget>
       <widget class="QMenu" name="dbaseMenu" >
         <property name="title" >
@@ -905,17 +904,6 @@
       </property>
       <property name="text" >
         <string>Virtual Contacts...</string>
-      </property>
-    </action>
-    <action name="autoGraspGeneration_ExaminerAction" >
-      <property name="name" >
-        <cstring>autoGraspGeneration_ExaminerAction</cstring>
-      </property>
-      <property name="iconText" >
-        <string>Auto Grasp Generation</string>
-      </property>
-      <property name="text" >
-        <string>Auto Grasp Generation</string>
       </property>
     </action>
     <action name="graspEigenGrasp_PlannerAction" >

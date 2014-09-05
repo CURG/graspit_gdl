@@ -114,6 +114,7 @@ public slots:
 	//-------------
 	void eigenGraspActivated();
 	void graspContactExaminer_activated();
+    void autoGraspGeneration_activated();
 	void eigenGraspPlannerActivated();
 	void graspCompliantPlanner();
 	//-------------

@@ -67,6 +67,7 @@
 #include "gfoDlg.h"
 #include "contactExaminerDlg.h"
 #include "egPlannerDlg.h"
+#include "autoGraspGenerationDlg.h"
 #ifdef CGDB_ENABLED
 #include "DBase/dbaseDlg.h"
 #include "DBase/dbasePlannerDlg.h"
@@ -128,8 +129,10 @@ MainWindow::MainWindow(QWidget *parent)
 	// -- grasp menu, part I
 	QObject::connect(mUI->graspEigenGrasp_InterfaceAction, SIGNAL(triggered()), 
 					 this, SLOT(eigenGraspActivated()));
-	QObject::connect(mUI->graspContact_ExaminerAction, SIGNAL(triggered()),
+    QObject::connect(mUI->graspContact_ExaminerAction, SIGNAL(triggered()),
 					 this, SLOT(graspContactExaminer_activated()));
+    QObject::connect(mUI->autoGraspGeneration_ExaminerAction, SIGNAL(triggered()),
+                     this, SLOT(autoGraspGeneration_activated()));
 	QObject::connect(mUI->graspEigenGrasp_PlannerAction, SIGNAL(triggered()),
 					 this, SLOT(eigenGraspPlannerActivated()));
 	// -- dbase menu
@@ -758,6 +761,26 @@ void MainWindow::graspContactExaminer_activated()
 	dlg->setAttribute(Qt::WA_ShowModal, false);
 	dlg->setAttribute(Qt::WA_DeleteOnClose, true);
 	dlg->show();
+}
+
+void MainWindow::autoGraspGeneration_activated()
+{
+    assert(world->getCurrentHand());
+    if (world->getCurrentHand()->getEigenGrasps() == NULL) {
+        fprintf(stderr,"Current hand has no EigenGrasp information!\n");
+        return;
+    }
+    int gb = mUI->graspedBodyBox->currentItem();
+    if ( gb < 0 || world->getNumGB() < gb+1 ) {
+        fprintf(stderr,"No object selected\n");
+        return;
+    }
+
+    AutoGraspGenerationDlg *dlg = new AutoGraspGenerationDlg(mWindow);
+    dlg->setMembers(world->getCurrentHand(), world->getGB(gb));
+    dlg->setAttribute(Qt::WA_ShowModal, false);
+    dlg->setAttribute(Qt::WA_DeleteOnClose, true);
+    dlg->show();
 }
 
 void MainWindow::eigenGraspPlannerActivated()

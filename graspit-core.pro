@@ -16,9 +16,9 @@ UI_DIR = ui
 
 # ---------------------- Graspit source code ----------------------------------------------
 
-INCLUDEPATH += src src/Collision include include/math include/Planner include/EGPlanner ui ui/Planner ui/EGPlanner include/Servers
+INCLUDEPATH += src src/Collision include include/math include/Planner include/EGPlanner ui ui/Planner ui/EGPlanner ui/AutoGraspGeneration include/Servers
 
-DEPENDPATH += src src/Collision include include/math include/Planner include/EGPlanner ui ui/Planner ui/EGPlanner include/Servers
+DEPENDPATH += src src/Collision include include/math include/Planner include/EGPlanner ui ui/Planner ui/EGPlanner ui/AutoGraspGeneration include/Servers
 
 HEADERS	+= include/barrett.h \
 	include/body.h \
@@ -239,6 +239,7 @@ FORMS += ui/mainWindow.ui \
 	ui/Planner/plannerdlg.ui \
 	ui/EGPlanner/egPlannerDlg.ui \
         ui/EGPlanner/compliantPlannerDlg.ui \
+        ui/AutoGraspGeneration/autoGraspGenerationDlg.ui \
     ui/BCI/state_views/graspView.ui
 
 
@@ -258,7 +259,8 @@ HEADERS += ui/mainWindow.h \
 	ui/qmDlg.h \
 	ui/Planner/plannerdlg.h \
 	ui/EGPlanner/egPlannerDlg.h \
-        ui/EGPlanner/compliantPlannerDlg.h
+        ui/EGPlanner/compliantPlannerDlg.h\
+        ui/AutoGraspGeneration/autoGraspGenerationDlg.h
 
 
 SOURCES += ui/mainWindow.cpp \
@@ -275,6 +277,7 @@ SOURCES += ui/mainWindow.cpp \
 	ui/settingsDlg.cpp \
 	ui/Planner/plannerdlg.cpp \
 	ui/EGPlanner/egPlannerDlg.cpp \
+        ui/AutoGraspGeneration/autoGraspGenerationDlg.cpp \
         ui/EGPlanner/compliantPlannerDlg.cpp
 
 #-------------------------------------- images and resources -------------------------------------------------------
