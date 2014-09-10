@@ -51,6 +51,7 @@ CONFIG += bci_experiment
 #------------------GraspIt! core files---------------------
 CONFIG += protobuf
 CONFIG += rpcz
+CONFIG += pcl
 include(graspit-core.pro)
 
 

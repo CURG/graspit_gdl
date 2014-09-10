@@ -64,6 +64,12 @@
 //#define GRASPITDBG
 #include "debug.h"
 #include <boost/filesystem.hpp>
+#include <pcl/PCLPointCloud2.h>
+#include <pcl/point_types.h>
+#include <pcl/features/normal_3d.h>
+#include <pcl/search/kdtree.h>
+#include <pcl/console/print.h>
+#include <pcl/features/feature.h>
 
 
 #include <fstream>
@@ -135,6 +141,9 @@ void AutoGraspGenerationDlg::init()
 
   inputGloveBox->setEnabled(FALSE);
   inputLoadButton->setEnabled(FALSE);
+
+
+
  
 }
 
@@ -695,8 +704,9 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
     fprintf(stderr,"Unknown planner type requested\n");
     return;
   } 
-  graspItGUI->getIVmgr()->getWorld()->setCurrentPlanner(mPlanner);
 
+  //graspItGUI->getIVmgr()->getWorld()->load("worlds/barrett_cordless_drill.xml");
+  graspItGUI->getIVmgr()->getWorld()->setCurrentPlanner(mPlanner);
 
 
   QObject::connect(mPlanner,SIGNAL(update()),this,SLOT(plannerUpdate()));
@@ -707,7 +717,7 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
 
   QTimer *timer = new QTimer(this);
   connect(timer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
-  timer->start(20000);
+  timer->start(5000);
   plannerStart_clicked();
 
 }
@@ -721,34 +731,71 @@ void AutoGraspGenerationDlg::timerUpdate()
 }
 
 
-Quaternion eulerToQuaternion(double roll, double pitch, double yaw)
+#include <set>
+bool operator<(const position & a, const position & b)
 {
-   double c1 = cos(roll);
-   double s1 = sin(roll);
-   double c2 = cos(pitch);
-   double s2 = sin(pitch);
-   double c3 = cos(yaw);
-   double s3 = sin(yaw);
+    if(a.x() < b.x() || a.y() < b.y() || a.z() < b.z())
+        return true;
+    return false;
 
-   double w = sqrt(1.0 + c1 * c2 + c1*c3 - s1 * s2 * s3 + c2*c3) / 2.0;
-   double w4 = (4.0 * w);
+}
 
-   double x = (c2 * s3 + c1 * s3 + s1 * s2 * c3) / w4 ;
-   double y = (s1 * c2 + s1 * c3 + c1 * s2 * s3) / w4 ;
-   double z = (-s1 * s3 + c1 * s2 * c3 +s2) / w4 ;
+void uniquifyPointCloud(std::vector<position> & vertices)
+{
+    std::set<position> s;
+    unsigned size = vertices.size();
+    for( unsigned i = 0; i < size; ++i ) s.insert( vertices[i] );
+    vertices.assign( s.begin(), s.end() );
+}
 
-   Quaternion rot(w,x,y,z);
-   return rot;
-               //obj->setTran(rotate_transf()*obj->getTran())
- }
-
+void showNormals(Body * b, pcl::PointCloud<pcl::PointNormal> & cloud)
+{
+    b->breakVirtualContacts();
+   for(int i = 0; i < cloud.size(); ++i)
+    {
+        PointContact c(b, NULL, position(cloud.at(i).x,cloud.at(i).y,cloud.at(i).z)*b->getTran().inverse(),
+                       vec3(cloud.at(i).normal_x,cloud.at(i).normal_y,cloud.at(i).normal_z)*b->getTran().inverse());
+        VirtualContact * vc = new VirtualContact(1, 1, &c);
+        b->addVirtualContact(vc);
+    }
+  b->showFrictionCones(1);
+}
 
 void AutoGraspGenerationDlg::plannerReset_clicked() 
 {
 
   assert(mPlanner);
 
+  if (cloud_with_normals.empty())
+  {
+      std::vector<position> vertices;
+      mPlanner->getTargetState()->getObject()->getGeometryVertices(&vertices);
+      uniquifyPointCloud(vertices);
+      pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
+      std::cout  << "vertices.size()" << vertices.size();
+      for(int i=0; i < vertices.size();i++)
+      {
+          const pcl::PointXYZ point(vertices[i].x(),vertices[i].y(),vertices[i].z());
+          cloud->push_back(point);
+      }
 
+      // Normal estimation*
+      pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normalEstimation;
+      pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
+      pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
+      tree->setInputCloud (cloud);
+      normalEstimation.setInputCloud (cloud);
+      normalEstimation.setSearchMethod (tree);
+      normalEstimation.setKSearch (20);
+      normalEstimation.compute (*normals);
+      //* normals should not contain the point normals + surface curvatures
+
+      // Concatenate the XYZ and normal fields*
+      //pcl::PointCloud<pcl::PointNormal> cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
+      pcl::concatenateFields (*cloud, *normals, cloud_with_normals);
+
+      showNormals(mPlanner->getTargetState()->getObject(), cloud_with_normals);
+  }
 
   resetCount +=1;
   std::stringstream ss;
@@ -766,7 +813,6 @@ void AutoGraspGenerationDlg::plannerReset_clicked()
 
   boost::filesystem3::create_directories(grasp_dir);
 
-
   FILE *f = fopen(graspFilename.c_str(),"w");
   for (int i=0; i<mPlanner->getListSize(); i++)
   {
@@ -777,42 +823,37 @@ void AutoGraspGenerationDlg::plannerReset_clicked()
       fprintf(f,"\n");
   }
   fclose(f);
-  //mHand->setTran(rotate_transf(M_PI/2.0, vec3(0,0,1))*mHand->getTran());
 
-  double current_x = mHand->getTran().translation().x();
-  double current_y = mHand->getTran().translation().y();
-  double current_z = mHand->getTran().translation().z();
+    //mHand->setTran(rotate_transf(M_PI/2.0, vec3(0,0,1))*mHand->getTran());
 
-  std::cout  << "handPositions.size()" << handPositions.size();
-  vec3 newPosition = handPositions.at(currentHandPositionIndex);
+    //  double current_x = mHand->getTran().translation().x();
+    //  double current_y = mHand->getTran().translation().y();
+    //  double current_z = mHand->getTran().translation().z();
 
-  vec3 offsetNewPosition = vec3(newPosition.x()-current_x, newPosition.y()-current_y , newPosition.z()-current_z);
-  std::cout << " x:" << offsetNewPosition.x();
-  std::cout << " y:"<< offsetNewPosition.y();
-  std::cout << " z:"<< offsetNewPosition.z();
-  //mHand->setTran(translate_transf(offsetNewPosition)*mHand->getTran());
-  mHand->setTran(translate_transf(newPosition));
+    //vec3 newPosition = handPositions.at(currentHandPositionIndex);
+    //vec3 offsetNewPosition = vec3(p.x-current_x, p.y-current_y , p.z-current_z);
+
+    //vec3 offsetNewPosition = vec3(newPosition.x()-current_x, newPosition.y()-current_y , newPosition.z()-current_z);
+    //  std::cout << " x:" << offsetNewPosition.x();
+    //  std::cout << " y:"<< offsetNewPosition.y();
+    //  std::cout << " z:"<< offsetNewPosition.z();
+    //mHand->setTran(translate_transf(offsetNewPosition)*mHand->getTran());
+
+
+  pcl::PointNormal p = this->cloud_with_normals.at(currentHandPositionIndex);
+
+  //For Barrett
+  //vec3 normal_trans = vec3(0,0,-50);
+
+  //For Mico
+  //vec3 normal_trans = vec3(0,0,150);
+  //mHand->setTran(translate_transf(normal_trans)*rotXYZ(p.normal_x + M_PI,p.normal_y, p.normal_z));
+
+  vec3 normal_trans = vec3(p.x,p.y,p.z+150);
+  //the rotXYZ is still wrong, needs to also rotate in order to orient along the surface normal!!!!!!!
+  mHand->setTran(translate_transf(normal_trans)*rotXYZ(M_PI,0, 0));
+
   currentHandPositionIndex++;
-
-//  double pose[7];
-//  Quaternion newOrientation = objectOrientations.at(currentOrientationCount);
-//  currentOrientationCount++;
-
-//  const double newPose[7] =
-//  {
-//      0,0,0,
-//      newOrientation.w,
-//      newOrientation.x,
-//      newOrientation.y,
-//      newOrientation.z
-//  };
-
-//  pose[3] = newOrientation.w;
-//  pose[4] = newOrientation.x;
-//  pose[5] = newOrientation.y;
-//  pose[6] = newOrientation.z;
-
-  //mPlanner->getGrasp(0)->getObject()->setPos(newPose);
 
   readPlannerSettings();
   mPlanner->resetPlanner();

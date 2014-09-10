@@ -2,7 +2,7 @@
 <robot type="Hand">
     <palm>mico_hand_link.xml</palm>
     <dof type="r">
-              <defaultVelocity>1.0</defaultVelocity>
+        <defaultVelocity>1.0</defaultVelocity>
         <maxEffort>2.5e+9</maxEffort>
         <Kp>1.0e+11</Kp>
         <Kd>1.0e+7</Kd>

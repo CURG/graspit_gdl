@@ -34,7 +34,8 @@
 #include <QtGui/QShortcut>
 #include "DBase/DBPlanner/sql_database_manager.h"
 #include <math.h>
-
+#include <pcl/point_cloud.h>
+#include <pcl/features/normal_3d.h>
 
 class QGridLayout;
 class QCheckBox;
@@ -52,8 +53,6 @@ class EGPlanner;
 class HandViewWindow;
 
 
-Quaternion eulerToQuaternion(double roll, double pitch, double yaw);
-
 
 /*! The EGPlannerDialog can interface to most of the types of EGPlanners, 
 	pass them any type of HandObjectState as a starting position, accept 
@@ -67,6 +66,7 @@ private:
   int resetCount;
   int currentHandPositionIndex;
   std::vector<vec3> handPositions;
+  pcl::PointCloud<pcl::PointNormal> cloud_with_normals;
 
   QGridLayout *varGridLayout;
   QVBoxLayout *varMainLayout;
@@ -106,26 +106,7 @@ public:
   {
       setupUi(this);
       init();
-      resetCount = 0;
-      currentHandPositionIndex = 0;
-      std::cout<< "adding hand position";
-      double numSteps = 3.0;
-      for(int x_index=-numSteps+1; x_index < numSteps+1; x_index++){
-          double x = x_index / numSteps * 220;
-          for(int y_index=-numSteps+1; y_index < numSteps+1; y_index++){
-              double y = y_index / numSteps * 220;
-              for(int z_index=-numSteps+1; z_index < numSteps+1; z_index++){
-                  double z = z_index / numSteps * 220;
-                  if(abs(x_index)+abs(y_index)+abs(z_index) > 4)
-                  {
-                      std::cout<< "adding hand position:(" << x <<"," << y << ","<< z <<")";
-                      handPositions.push_back(vec3(x,y,z));
-                  }
-              }
-          }
-      }
-
-	}
+  }
 	
     ~AutoGraspGenerationDlg(){destroy();}
 

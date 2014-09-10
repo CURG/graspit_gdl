@@ -40,8 +40,6 @@ models/robots/M7Tool
 models/robots/SimpleArm
 models/robots/TX60L
 models/obstacles/
-models/objects/
-models/object_database
 hardware
 ipch
 xmlconverter
