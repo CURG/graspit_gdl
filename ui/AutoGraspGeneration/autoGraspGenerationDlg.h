@@ -97,6 +97,11 @@ private:
   void initializeDbInterface();
   void initializeHandviewWindow();
 
+  void moveHandToNextPose();
+  void saveGrasps();
+  void generateHandPoses();
+
+
 
   
 public:

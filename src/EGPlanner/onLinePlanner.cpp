@@ -45,7 +45,7 @@
 
 #define SHOW_RECENT_SOLUTION 1
 #define CANDIDATE_BUFFER_SIZE 20
-#define SOLUTION_BUFFER_SIZE 10
+#define SOLUTION_BUFFER_SIZE 1000
 
 OnLinePlanner::OnLinePlanner(Hand *h) : SimAnnPlanner(h)
 {

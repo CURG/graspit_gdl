@@ -71,7 +71,7 @@
 #include <pcl/console/print.h>
 #include <pcl/features/feature.h>
 
-
+#include <math.h>
 #include <fstream>
 
 #define X_WINDOW_OFFSET 0
@@ -142,7 +142,7 @@ void AutoGraspGenerationDlg::init()
   inputGloveBox->setEnabled(FALSE);
   inputLoadButton->setEnabled(FALSE);
 
-
+    resetCount = 0;
 
  
 }
@@ -691,7 +691,7 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
     energyBox->setEnabled(TRUE);
     energyBox->setCurrentItem(2);
     QString n;
-    n.setNum(2000);
+    n.setNum(3000);
     annStepsEdit->setText(n);
     QObject::connect(mPlanner,SIGNAL(update()),this,SLOT(onlinePlannerUpdate())); 
   }
@@ -715,20 +715,9 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
   updateStatus();
   plannerReset_clicked();  
 
-  QTimer *timer = new QTimer(this);
-  connect(timer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
-  timer->start(5000);
-  plannerStart_clicked();
-
 }
 
-void AutoGraspGenerationDlg::timerUpdate()
-{
-    std::cout << "timer update called";
-    plannerStart_clicked();
-    plannerReset_clicked();
-    plannerStart_clicked();
-}
+
 
 
 #include <set>
@@ -753,119 +742,165 @@ void showNormals(Body * b, pcl::PointCloud<pcl::PointNormal> & cloud)
     b->breakVirtualContacts();
    for(int i = 0; i < cloud.size(); ++i)
     {
-        PointContact c(b, NULL, position(cloud.at(i).x,cloud.at(i).y,cloud.at(i).z)*b->getTran().inverse(),
-                       vec3(cloud.at(i).normal_x,cloud.at(i).normal_y,cloud.at(i).normal_z)*b->getTran().inverse());
+        //PointContact c(b, b, position(cloud.at(i).x,cloud.at(i).y,cloud.at(i).z)*b->getTran().inverse(),
+        //               vec3(cloud.at(i).normal_x,cloud.at(i).normal_y,cloud.at(i).normal_z)*b->getTran().inverse());
+
+        PointContact c(b, b, position(cloud.at(i).x,cloud.at(i).y,cloud.at(i).z),
+                       vec3(cloud.at(i).normal_x,cloud.at(i).normal_y,cloud.at(i).normal_z));
         VirtualContact * vc = new VirtualContact(1, 1, &c);
         b->addVirtualContact(vc);
     }
   b->showFrictionCones(1);
 }
 
+void showSingleNormal(Body * b, pcl::PointCloud<pcl::PointNormal> & cloud, int normalIndex)
+{
+    b->breakVirtualContacts();
+
+    PointContact c(b, b, position(cloud.at(normalIndex).x,cloud.at(normalIndex).y,cloud.at(normalIndex).z),
+                   vec3(cloud.at(normalIndex).normal_x,cloud.at(normalIndex).normal_y,cloud.at(normalIndex).normal_z));
+    VirtualContact * vc = new VirtualContact(1, 1, &c);
+    b->addVirtualContact(vc);
+
+    b->showFrictionCones(1);
+}
+
+void AutoGraspGenerationDlg::generateHandPoses()
+{
+    std::vector<position> vertices;
+    mPlanner->getTargetState()->getObject()->getGeometryVertices(&vertices);
+    uniquifyPointCloud(vertices);
+    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
+    std::cout  << "vertices.size()" << vertices.size();
+    for(int i=0; i < vertices.size();i++)
+    {
+        const pcl::PointXYZ point(vertices[i].x(),vertices[i].y(),vertices[i].z());
+        cloud->push_back(point);
+    }
+
+    // Normal estimation*
+    pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normalEstimation;
+    pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
+    pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
+    tree->setInputCloud (cloud);
+    normalEstimation.setInputCloud (cloud);
+    normalEstimation.setSearchMethod (tree);
+    normalEstimation.setKSearch (20);
+    normalEstimation.compute (*normals);
+    //* normals should not contain the point normals + surface curvatures
+
+    // Concatenate the XYZ and normal fields*
+    //pcl::PointCloud<pcl::PointNormal> cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
+    pcl::concatenateFields (*cloud, *normals, cloud_with_normals);
+
+    currentHandPositionIndex =0;
+    //showNormals(mPlanner->getTargetState()->getObject(), cloud_with_normals);
+}
+
+
+void AutoGraspGenerationDlg::moveHandToNextPose()
+{
+
+    pcl::PointNormal pointNormalInBodyCoord = this->cloud_with_normals.at(currentHandPositionIndex);
+
+    double x = pointNormalInBodyCoord.x;
+    double y = pointNormalInBodyCoord.y;
+    double z = pointNormalInBodyCoord.z;
+
+    double normal_x = pointNormalInBodyCoord.normal_x;
+    double normal_y = pointNormalInBodyCoord.normal_y;
+    double normal_z = pointNormalInBodyCoord.normal_z;
+
+
+//http://stackoverflow.com/questions/21622956/how-to-convert-direction-vector-to-euler-angles
+//    The nose of that airplane points towards the direction vector
+//    D=(XD,YD,ZD) .
+      vec3 D = vec3(normal_x,normal_y,normal_z);
+
+//    Towards the roof is the up vector
+//    U=(XU,YU,ZU) .
+      vec3 U = D * vec3(0,1,0) * D;
+
+    transf worldToObject = mPlanner->getTargetState()->getObject()->getTran();
+    transf meshPointToApproachTran = translate_transf(vec3(-150*normal_x, -150*normal_y, -150*normal_z));
+    transf orientHand = rotXYZ(0,-M_PI/2.0,0) * coordinate_transf(position(x,y,z),D,U) ;
+
+    mHand->setTran( orientHand * meshPointToApproachTran*worldToObject );
+
+    //showSingleNormal(mPlanner->getTargetState()->getObject(), cloud_with_normals,currentHandPositionIndex );
+
+    currentHandPositionIndex+=10;
+
+}
+
+
+void AutoGraspGenerationDlg::saveGrasps()
+{
+    resetCount +=1;
+    std::stringstream ss;
+    ss << "saved_grasps/";
+    ss << mPlanner->getTargetState()->getObject()->getName().toStdString().c_str();
+
+
+    std::string grasp_dir = ss.str();
+
+    ss << "/grasps_";
+    ss << resetCount;
+    ss << ".txt";
+
+    std::string graspFilename = ss.str();
+
+    boost::filesystem3::create_directories(grasp_dir);
+
+    FILE *f = fopen(graspFilename.c_str(),"w");
+    for (int i=0; i<mPlanner->getListSize(); i++)
+    {
+        fprintf(f,"graspId: %d\n", i);
+        fprintf(f,"energy: %f\n", mPlanner->getGrasp(i)->getEnergy());
+
+        mPlanner->getGrasp(i)->writeToFile(f);
+        fprintf(f,"\n");
+    }
+    fclose(f);
+}
+
 void AutoGraspGenerationDlg::plannerReset_clicked() 
 {
 
   assert(mPlanner);
-
-  if (cloud_with_normals.empty())
-  {
-      std::vector<position> vertices;
-      mPlanner->getTargetState()->getObject()->getGeometryVertices(&vertices);
-      uniquifyPointCloud(vertices);
-      pcl::PointCloud<pcl::PointXYZ>::Ptr cloud (new pcl::PointCloud<pcl::PointXYZ>);
-      std::cout  << "vertices.size()" << vertices.size();
-      for(int i=0; i < vertices.size();i++)
-      {
-          const pcl::PointXYZ point(vertices[i].x(),vertices[i].y(),vertices[i].z());
-          cloud->push_back(point);
-      }
-
-      // Normal estimation*
-      pcl::NormalEstimation<pcl::PointXYZ, pcl::Normal> normalEstimation;
-      pcl::PointCloud<pcl::Normal>::Ptr normals (new pcl::PointCloud<pcl::Normal>);
-      pcl::search::KdTree<pcl::PointXYZ>::Ptr tree (new pcl::search::KdTree<pcl::PointXYZ>);
-      tree->setInputCloud (cloud);
-      normalEstimation.setInputCloud (cloud);
-      normalEstimation.setSearchMethod (tree);
-      normalEstimation.setKSearch (20);
-      normalEstimation.compute (*normals);
-      //* normals should not contain the point normals + surface curvatures
-
-      // Concatenate the XYZ and normal fields*
-      //pcl::PointCloud<pcl::PointNormal> cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
-      pcl::concatenateFields (*cloud, *normals, cloud_with_normals);
-
-      showNormals(mPlanner->getTargetState()->getObject(), cloud_with_normals);
-  }
-
-  resetCount +=1;
-  std::stringstream ss;
-  ss << "saved_grasps/";
-  ss << mPlanner->getTargetState()->getObject()->getName().toStdString().c_str();
-
-
-  std::string grasp_dir = ss.str();
-
-  ss << "/grasps_";
-  ss << resetCount;
-  ss << ".txt";
-
-  std::string graspFilename = ss.str();
-
-  boost::filesystem3::create_directories(grasp_dir);
-
-  FILE *f = fopen(graspFilename.c_str(),"w");
-  for (int i=0; i<mPlanner->getListSize(); i++)
-  {
-      fprintf(f,"graspId: %d\n", i);
-      fprintf(f,"energy: %f\n", mPlanner->getGrasp(i)->getEnergy());
-
-      mPlanner->getGrasp(i)->writeToFile(f);
-      fprintf(f,"\n");
-  }
-  fclose(f);
-
-    //mHand->setTran(rotate_transf(M_PI/2.0, vec3(0,0,1))*mHand->getTran());
-
-    //  double current_x = mHand->getTran().translation().x();
-    //  double current_y = mHand->getTran().translation().y();
-    //  double current_z = mHand->getTran().translation().z();
-
-    //vec3 newPosition = handPositions.at(currentHandPositionIndex);
-    //vec3 offsetNewPosition = vec3(p.x-current_x, p.y-current_y , p.z-current_z);
-
-    //vec3 offsetNewPosition = vec3(newPosition.x()-current_x, newPosition.y()-current_y , newPosition.z()-current_z);
-    //  std::cout << " x:" << offsetNewPosition.x();
-    //  std::cout << " y:"<< offsetNewPosition.y();
-    //  std::cout << " z:"<< offsetNewPosition.z();
-    //mHand->setTran(translate_transf(offsetNewPosition)*mHand->getTran());
-
-
-  pcl::PointNormal p = this->cloud_with_normals.at(currentHandPositionIndex);
-
-  //For Barrett
-  //vec3 normal_trans = vec3(0,0,-50);
-
-  //For Mico
-  //vec3 normal_trans = vec3(0,0,150);
-  //mHand->setTran(translate_transf(normal_trans)*rotXYZ(p.normal_x + M_PI,p.normal_y, p.normal_z));
-
-  vec3 normal_trans = vec3(p.x,p.y,p.z+150);
-  //the rotXYZ is still wrong, needs to also rotate in order to orient along the surface normal!!!!!!!
-  mHand->setTran(translate_transf(normal_trans)*rotXYZ(M_PI,0, 0));
-
-  currentHandPositionIndex++;
-
   readPlannerSettings();
   mPlanner->resetPlanner();
   updateStatus();
 }
 
+void AutoGraspGenerationDlg::timerUpdate()
+{
+    std::cout << "timer update called" << std::endl;
+    std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
+    std::cout << "currentHandPositionIndex" << currentHandPositionIndex << std::endl;
+
+    if (cloud_with_normals.size() < currentHandPositionIndex)
+    {
+        saveGrasps();
+        stopPlanner();
+    }
+    else
+    {
+        moveHandToNextPose();
+    }
+}
+
 void AutoGraspGenerationDlg::startPlanner()
 {
-  //mPlanner->startThread(); 
-  mPlanner->startPlanner();
-  updateStatus();
+    generateHandPoses();
+    QTimer *timer = new QTimer(this);
+    connect(timer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
+    timer->start(20000);
+    //mPlanner->startThread();
+    mPlanner->startPlanner();
+    updateStatus();
 }
+
 
 void AutoGraspGenerationDlg::stopPlanner()
 {

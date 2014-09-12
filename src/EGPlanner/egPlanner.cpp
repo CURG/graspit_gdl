@@ -47,7 +47,7 @@
 
 PROF_DECLARE(EG_PLANNER);
 
-#define BEST_LIST_SIZE 20
+#define BEST_LIST_SIZE 2000
 
 EGPlanner::EGPlanner(Hand *h)
 {
@@ -567,7 +567,7 @@ EGPlanner::setStatStream(std::ostream *out) const
 bool 
 EGPlanner::addSolution(GraspPlanningState *s)
 {   
-  bool addResult = addToListOfUniqueSolutions(s,&mBestList,0.2);  
+  bool addResult = addToListOfUniqueSolutions(s,&mBestList,0.02);
   mCurrentStep +=1;
   return addResult;
 }
