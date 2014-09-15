@@ -34,7 +34,7 @@
 
 //this should be a parameter of the EGPlanner
 //iros09
-#define BEST_LIST_SIZE 2000
+#define BEST_LIST_SIZE 20000
 
 ListPlanner::ListPlanner(Hand *h)
 {

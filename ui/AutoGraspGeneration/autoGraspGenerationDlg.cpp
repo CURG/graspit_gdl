@@ -84,6 +84,15 @@ void AutoGraspGenerationDlg::exitButton_clicked()
 void AutoGraspGenerationDlg::init()
 { 
 
+
+    millisecondsPerMeshPoint = 30000;
+    meshPointIncrement = 10;
+    currentMeshPointIndex = 0;
+    grasp_dir =  "/home/jvarley/grasp_deep_learning/graspit_gdl/saved_grasps/";
+
+    seedHandMovementTimer = new QTimer(this);
+    connect(seedHandMovementTimer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
+
   energyBox->insertItem("Hand Contacts");
   energyBox->insertItem("Potential Quality");
   energyBox->insertItem("Contacts AND Quality");
@@ -103,11 +112,6 @@ void AutoGraspGenerationDlg::init()
   plannerStartButton->setEnabled(FALSE);
   instantEnergyButton->setEnabled(FALSE);
 
-  //useVirtualHandBox->setChecked(FALSE);
-  //showSolutionBox->setChecked(TRUE);
-  //showCloneBox->setChecked(TRUE);
-  //onlineDetailsGroup->setEnabled(TRUE);//CHANGED!
-
   QString n;
   QIntValidator* vAnnSteps = new QIntValidator(1,500000,this);
   annStepsEdit->setValidator(vAnnSteps);
@@ -118,7 +122,7 @@ void AutoGraspGenerationDlg::init()
   spaceSearchBox->insertItem("Axis-angle");
   spaceSearchBox->insertItem("Ellipsoid");
   spaceSearchBox->insertItem("Approach");
-  spaceSearchBox->setCurrentItem(1);
+  spaceSearchBox->setCurrentItem(3);
 
   prevGraspButton->setEnabled(FALSE);
   nextGraspButton->setEnabled(FALSE);
@@ -142,7 +146,6 @@ void AutoGraspGenerationDlg::init()
   inputGloveBox->setEnabled(FALSE);
   inputLoadButton->setEnabled(FALSE);
 
-    resetCount = 0;
 
  
 }
@@ -742,9 +745,6 @@ void showNormals(Body * b, pcl::PointCloud<pcl::PointNormal> & cloud)
     b->breakVirtualContacts();
    for(int i = 0; i < cloud.size(); ++i)
     {
-        //PointContact c(b, b, position(cloud.at(i).x,cloud.at(i).y,cloud.at(i).z)*b->getTran().inverse(),
-        //               vec3(cloud.at(i).normal_x,cloud.at(i).normal_y,cloud.at(i).normal_z)*b->getTran().inverse());
-
         PointContact c(b, b, position(cloud.at(i).x,cloud.at(i).y,cloud.at(i).z),
                        vec3(cloud.at(i).normal_x,cloud.at(i).normal_y,cloud.at(i).normal_z));
         VirtualContact * vc = new VirtualContact(1, 1, &c);
@@ -793,7 +793,7 @@ void AutoGraspGenerationDlg::generateHandPoses()
     //pcl::PointCloud<pcl::PointNormal> cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
     pcl::concatenateFields (*cloud, *normals, cloud_with_normals);
 
-    currentHandPositionIndex =0;
+    currentMeshPointIndex =0;
     //showNormals(mPlanner->getTargetState()->getObject(), cloud_with_normals);
 }
 
@@ -801,7 +801,7 @@ void AutoGraspGenerationDlg::generateHandPoses()
 void AutoGraspGenerationDlg::moveHandToNextPose()
 {
 
-    pcl::PointNormal pointNormalInBodyCoord = this->cloud_with_normals.at(currentHandPositionIndex);
+    pcl::PointNormal pointNormalInBodyCoord = this->cloud_with_normals.at(currentMeshPointIndex);
 
     double x = pointNormalInBodyCoord.x;
     double y = pointNormalInBodyCoord.y;
@@ -829,30 +829,32 @@ void AutoGraspGenerationDlg::moveHandToNextPose()
 
     //showSingleNormal(mPlanner->getTargetState()->getObject(), cloud_with_normals,currentHandPositionIndex );
 
-    currentHandPositionIndex+=10;
+    currentMeshPointIndex+=meshPointIncrement;
 
 }
 
 
 void AutoGraspGenerationDlg::saveGrasps()
 {
-    resetCount +=1;
+
     std::stringstream ss;
-    ss << "saved_grasps/";
+    //folder to save grasps
+    ss << grasp_dir;
+
+    //subfolder for the object/hand we are grasping
     ss << mPlanner->getTargetState()->getObject()->getName().toStdString().c_str();
 
 
-    std::string grasp_dir = ss.str();
+    std::string fullGraspPath = ss.str();
 
-    ss << "/grasps_";
-    ss << resetCount;
+    ss << "/grasps";
     ss << ".txt";
 
-    std::string graspFilename = ss.str();
+    std::string fullGraspPathAndFilename = ss.str();
 
-    boost::filesystem3::create_directories(grasp_dir);
+    boost::filesystem3::create_directories(fullGraspPath);
 
-    FILE *f = fopen(graspFilename.c_str(),"w");
+    FILE *f = fopen(fullGraspPathAndFilename.c_str(),"w");
     for (int i=0; i<mPlanner->getListSize(); i++)
     {
         fprintf(f,"graspId: %d\n", i);
@@ -862,11 +864,12 @@ void AutoGraspGenerationDlg::saveGrasps()
         fprintf(f,"\n");
     }
     fclose(f);
+
+    std::cout << "saved grasps to: " << fullGraspPathAndFilename.c_str() << std::endl;
 }
 
 void AutoGraspGenerationDlg::plannerReset_clicked() 
 {
-
   assert(mPlanner);
   readPlannerSettings();
   mPlanner->resetPlanner();
@@ -877,12 +880,12 @@ void AutoGraspGenerationDlg::timerUpdate()
 {
     std::cout << "timer update called" << std::endl;
     std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
-    std::cout << "currentHandPositionIndex" << currentHandPositionIndex << std::endl;
+    std::cout << "currentHandPositionIndex" << currentMeshPointIndex << std::endl;
 
-    if (cloud_with_normals.size() < currentHandPositionIndex)
+    if (cloud_with_normals.size() < currentMeshPointIndex)
     {
-        saveGrasps();
         stopPlanner();
+        saveGrasps();
     }
     else
     {
@@ -893,10 +896,7 @@ void AutoGraspGenerationDlg::timerUpdate()
 void AutoGraspGenerationDlg::startPlanner()
 {
     generateHandPoses();
-    QTimer *timer = new QTimer(this);
-    connect(timer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
-    timer->start(20000);
-    //mPlanner->startThread();
+    seedHandMovementTimer->start(millisecondsPerMeshPoint);
     mPlanner->startPlanner();
     updateStatus();
 }
@@ -904,6 +904,7 @@ void AutoGraspGenerationDlg::startPlanner()
 
 void AutoGraspGenerationDlg::stopPlanner()
 {
+  seedHandMovementTimer->stop();
   mPlanner->pausePlanner();
   updateStatus();
 }

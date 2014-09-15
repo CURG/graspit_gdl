@@ -63,43 +63,60 @@ class AutoGraspGenerationDlg : public QDialog, public Ui::autoGraspGenerationDlg
 {
 	Q_OBJECT
 private:
-  int resetCount;
-  int currentHandPositionIndex;
-  std::vector<vec3> handPositions;
-  pcl::PointCloud<pcl::PointNormal> cloud_with_normals;
 
-  QGridLayout *varGridLayout;
-  QVBoxLayout *varMainLayout;
-  QShortcut * initShortcut;
-  std::vector<QCheckBox*> varInput;
-  std::vector<QCheckBox*> varCheck;
-  std::vector<QLabel*> varNames;
-  std::vector<QHBoxLayout*> varLayouts;
-  std::vector<QSlider*> varConfidence;
-  std::vector<QLabel*> varTarget;
-  GraspPlanningState *mHandObjectState;
-  GraspableBody *mObject;
-  Hand *mHand;
-  int mDisplayState;
-  EGPlanner *mPlanner;
-  void init();
-  void destroy();
-  void setVariableLayout();
-  void updateVariableLayout();
-  void updateInputLayout();
-  void readPlannerSettings();
-  void startPlanner();
-  void stopPlanner();
-  QTime timer;
-  QWidget * circleDraw;
-  void initializeTarget();
-  void loadGraspsToHandviewWindow();
-  void initializeDbInterface();
-  void initializeHandviewWindow();
+    //-----------------------
+    //Grasp Generation Settings that need UI elements created for them
 
-  void moveHandToNextPose();
-  void saveGrasps();
-  void generateHandPoses();
+    //how long to sample at each mesh point
+    int millisecondsPerMeshPoint;
+
+    //how many meshpoints to skip
+    int meshPointIncrement;
+
+    //where to save the generated grasps
+    std::string grasp_dir;
+    //------------------------
+
+    //current meshpoint we are using to position the seed hand
+    int currentMeshPointIndex;
+
+    QTimer *seedHandMovementTimer;
+
+    //The mesh we are generating grasps for as a cloud with normals
+    pcl::PointCloud<pcl::PointNormal> cloud_with_normals;
+
+    QGridLayout *varGridLayout;
+    QVBoxLayout *varMainLayout;
+    QShortcut * initShortcut;
+    std::vector<QCheckBox*> varInput;
+    std::vector<QCheckBox*> varCheck;
+    std::vector<QLabel*> varNames;
+    std::vector<QHBoxLayout*> varLayouts;
+    std::vector<QSlider*> varConfidence;
+    std::vector<QLabel*> varTarget;
+    GraspPlanningState *mHandObjectState;
+    GraspableBody *mObject;
+    Hand *mHand;
+    int mDisplayState;
+    EGPlanner *mPlanner;
+    void init();
+    void destroy();
+    void setVariableLayout();
+    void updateVariableLayout();
+    void updateInputLayout();
+    void readPlannerSettings();
+    void startPlanner();
+    void stopPlanner();
+    QTime timer;
+    QWidget * circleDraw;
+    void initializeTarget();
+    void loadGraspsToHandviewWindow();
+    void initializeDbInterface();
+    void initializeHandviewWindow();
+
+    void moveHandToNextPose();
+    void saveGrasps();
+    void generateHandPoses();
 
 
 

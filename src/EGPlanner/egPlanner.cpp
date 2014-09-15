@@ -47,7 +47,7 @@
 
 PROF_DECLARE(EG_PLANNER);
 
-#define BEST_LIST_SIZE 2000
+#define BEST_LIST_SIZE 20000
 
 EGPlanner::EGPlanner(Hand *h)
 {

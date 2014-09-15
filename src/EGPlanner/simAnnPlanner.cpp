@@ -33,7 +33,7 @@
 #include "debug.h"
 
 //! How many of the best states are buffered. Should be a parameter
-#define BEST_LIST_SIZE 2000
+#define BEST_LIST_SIZE 20000
 //! Two states within this distance of each other are considered to be in the same neighborhood
 #define DISTANCE_THRESHOLD 0.3
 
