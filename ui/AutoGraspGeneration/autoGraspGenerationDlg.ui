@@ -759,7 +759,7 @@
   <connection>
    <sender>exitButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>exitButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -775,11 +775,11 @@
   <connection>
    <sender>prevGraspButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>prevGraspButton_clicked()</slot>
    <sender>executeGraspButton</sender>		
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>executeGraspButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -795,7 +795,7 @@
   <connection>
    <sender>bestGraspButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>bestGraspButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -811,7 +811,7 @@
   <connection>
    <sender>nextGraspButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>nextGraspButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -827,7 +827,7 @@
   <connection>
    <sender>setContactsBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>setContactsBox_toggled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -843,7 +843,7 @@
   <connection>
    <sender>spaceSearchBox</sender>
    <signal>activated(QString)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>spaceSearchBox_activated(QString)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -859,7 +859,7 @@
   <connection>
    <sender>energyBox</sender>
    <signal>activated(QString)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>energyBox_activated(QString)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -875,7 +875,7 @@
   <connection>
    <sender>plannerTypeBox</sender>
    <signal>activated(QString)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerTypeBox_activated(QString)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -891,7 +891,7 @@
   <connection>
    <sender>plannerResetButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerReset_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -907,7 +907,7 @@
   <connection>
    <sender>plannerInitButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerInit_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -923,7 +923,7 @@
   <connection>
    <sender>plannerStartButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerStart_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -939,7 +939,7 @@
   <connection>
    <sender>onlineGraspButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>onlineGraspButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -955,7 +955,7 @@
   <connection>
    <sender>autoGraspBox</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>autoGraspBox_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -971,7 +971,7 @@
   <connection>
    <sender>onlineReleaseButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>onlineReleaseButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -987,7 +987,7 @@
   <connection>
    <sender>onlinePlanButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>onlinePlanButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -1003,7 +1003,7 @@
   <connection>
    <sender>instantEnergyButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>instantEnergyButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -1019,7 +1019,7 @@
   <connection>
    <sender>showCloneBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>showCloneBox_toggled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -1035,7 +1035,7 @@
   <connection>
    <sender>showSolutionBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>showSolutionBox_toggled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -1051,7 +1051,7 @@
   <connection>
    <sender>useRealBarrettBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>useRealBarrettBox_toggled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -1067,7 +1067,7 @@
   <connection>
    <sender>inputGloveBox</sender>
    <signal>toggled(bool)</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>inputGloveBox_toggled(bool)</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -1083,7 +1083,7 @@
   <connection>
    <sender>inputLoadButton</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>inputLoadButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
@@ -1099,7 +1099,7 @@
   <connection>
    <sender>useVirtualHandBox</sender>
    <signal>clicked()</signal>
-   <receiver>EigenGraspPlannerDlgUI</receiver>
+   <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>useVirtualHandBox_clicked()</slot>
    <hints>
     <hint type="sourcelabel" >
