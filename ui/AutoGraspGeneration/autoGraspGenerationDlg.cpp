@@ -74,6 +74,9 @@
 #include <math.h>
 #include <fstream>
 
+#include <chrono>
+#include <thread>
+
 #define X_WINDOW_OFFSET 0
 
 void AutoGraspGenerationDlg::exitButton_clicked()
@@ -88,7 +91,7 @@ void AutoGraspGenerationDlg::init()
     millisecondsPerMeshPoint = 30000;
     meshPointIncrement = 10;
     currentMeshPointIndex = 0;
-    grasp_dir =  "/home/jvarley/grasp_deep_learning/graspit_gdl/saved_grasps/";
+    grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
 
     seedHandMovementTimer = new QTimer(this);
     connect(seedHandMovementTimer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
@@ -194,6 +197,11 @@ void AutoGraspGenerationDlg::updateObject(GraspableBody * b)
   mHandObjectState->setObject(mObject);
   mHandObjectState->setRefTran(mObject->getTran());
 
+}
+
+void AutoGraspGenerationDlg::setWorld( World *w )
+{
+  world = w;
 }
 
 void AutoGraspGenerationDlg::setMembers( Hand *h, GraspableBody *b )
@@ -668,6 +676,21 @@ void AutoGraspGenerationDlg::plannerComplete()
 
 void AutoGraspGenerationDlg::plannerInit_clicked()
 {  
+  assert(world->getCurrentHand());
+  if (world->getCurrentHand()->getEigenGrasps() == NULL) {
+      fprintf(stderr,"Current hand has no EigenGrasp information!\n");
+      return;
+  }
+
+  if (world->getNumGB() > 1) {
+    fprintf(stderr,"Too many graspable bodies!\n");
+    return;
+  }
+
+  this->setMembers(world->getCurrentHand(), world->getGB(0));
+  
+  spaceSearchBox_activated(QString("Approach"));
+
   QString s = plannerTypeBox->currentText();
   if (s == QString("Sim. Ann.")) {
     if (mPlanner) delete mPlanner;
@@ -708,7 +731,6 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
     return;
   } 
 
-  //graspItGUI->getIVmgr()->getWorld()->load("worlds/barrett_cordless_drill.xml");
   graspItGUI->getIVmgr()->getWorld()->setCurrentPlanner(mPlanner);
 
 
@@ -797,6 +819,19 @@ void AutoGraspGenerationDlg::generateHandPoses()
     //showNormals(mPlanner->getTargetState()->getObject(), cloud_with_normals);
 }
 
+
+void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
+{
+  if (rob != NULL)
+    world->destroyElement(rob, true);
+  if (obj != NULL)
+    world->destroyElement(obj, true);
+
+
+  rob = world->importRobot(handXMLNames[handId]);
+  obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
+
+}
 
 void AutoGraspGenerationDlg::moveHandToNextPose()
 {
@@ -889,6 +924,12 @@ void AutoGraspGenerationDlg::timerUpdate()
     }
     else
     {
+        currentModel++;
+        if (currentHand < handXMLNames.size() && currentModel < modelXMLNames.size())
+          chooseNewScene(currentHand, currentModel); 
+        else if (currentModel > modelXMLNames.size()) {
+          currentHand++; currentModel = 0;
+        }
         moveHandToNextPose();
     }
 }
@@ -1077,8 +1118,105 @@ void AutoGraspGenerationDlg::inputLoadButton_clicked()
 }
 
 
+//-------------------------------------------- Auto grasp planning -------------------------------------
+
+void AutoGraspGenerationDlg::loadModelsDirButton_clicked()
+{
+    QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GRASPIT"))+QString("/models/object_database")) );
+    if ( fn.isEmpty() ) {
+        return;
+    }
+    modelsDirName = fn;
+    modelsDirLbl->setText(modelsDirName);
+
+}
+
+void AutoGraspGenerationDlg::loadHandsDirButton_clicked()
+{
+    QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GRASPIT"))+QString("/models/robots")) );
+    if ( fn.isEmpty() ) {
+        return;
+    }
+    handsDirName = fn;
+    handsDirLbl->setText(handsDirName);
+
+}
 
 
+void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
+{
+
+    autoGenStatusLbl->setText("Collecting models and hands...");
+
+
+    struct dirent *parentEntry; 
+    DIR *parentDir;
+    DIR *childDir;
+
+    modelXMLNames.clear();
+    handXMLNames.clear();
+
+    // --------------------------- MODELS ---------------------------
+    DBGA("Looking for models in " << modelsDirName.toStdString() << "...");
+
+    parentDir = opendir(modelsDirName);
+    if (parentDir == NULL) {
+      DBGA("Please selected a models directory...");
+      return;
+    }
+
+    while ((parentEntry = readdir(parentDir))) {
+      if (parentEntry->d_name[0] != '.') {
+        childDir = opendir(modelsDirName + "/" + parentEntry->d_name);
+        if (childDir != NULL) {
+          modelXMLNames.push_back(QString(modelsDirName + "/" + parentEntry->d_name + "/" + parentEntry->d_name + ".xml"));
+          closedir(childDir);
+        }
+      }
+    }
+    closedir(parentDir);
+
+    DBGA("FOUND MODELS!");
+    for (unsigned int i=0; i<modelXMLNames.size(); i++) {
+      DBGA(" --- " << modelXMLNames[i].toStdString());
+    }
+
+    // --------------------------- HANDS ---------------------------
+    DBGA("Looking for hands in " << handsDirName.toStdString() << "...");
+
+    parentDir = opendir(handsDirName);
+    if (parentDir == NULL) {
+      DBGA("Please selected a hands directory...");
+      return;
+    }
+
+    while ((parentEntry = readdir(parentDir))) {
+      if (parentEntry->d_name[0] != '.') {
+        childDir = opendir(handsDirName + "/" + parentEntry->d_name);
+        if (childDir != NULL) {
+          handXMLNames.push_back(QString(handsDirName + "/" + parentEntry->d_name + "/" + parentEntry->d_name + ".xml"));
+          closedir(childDir);
+        }
+      }
+    }
+    closedir(parentDir);
+
+    DBGA("FOUND HANDS!");
+    for (unsigned int i=0; i<handXMLNames.size(); i++) {
+      DBGA(" --- " << handXMLNames[i].toStdString());
+    }
+
+    autoGenStatusLbl->setText("HIT THE OTHER GO BUTTON...");
+
+    currentHand = 0;
+    currentModel = 0;
+
+    rob = world->importRobot(handXMLNames[currentHand]);
+    obj = world->importBody("GraspableBody", modelXMLNames[currentModel]);
+
+
+
+}
 
 
 

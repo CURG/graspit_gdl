@@ -13,10 +13,4 @@
 			<fullTransform>(+0.00114461 -1.07504e-05 +0.999955 +0.00939181)[-0.686342 -5.63212 +299.801]</fullTransform>
 		</transform>
 	</robot>
-
-	<camera>
-		<position>-1835.8 +677.214 +433.111</position>
-		<orientation>+0.399791 -0.477146 -0.583966 +0.52104</orientation>
-		<focalDistance>+1992.45</focalDistance>
-	</camera>
 </world>

@@ -26,6 +26,8 @@
 #ifndef _autograspgenerationdlg_h_
 #define _autograspgenerationdlg_h_
 
+#include <dirent.h>
+
 #include <QDialog>
 
 #include "ui_autoGraspGenerationDlg.h"
@@ -52,6 +54,8 @@ class Hand;
 class EGPlanner;
 class HandViewWindow;
 
+class World;
+class Robot;
 
 
 /*! The EGPlannerDialog can interface to most of the types of EGPlanners, 
@@ -72,6 +76,9 @@ private:
 
     //how many meshpoints to skip
     int meshPointIncrement;
+
+    int currentHand;
+    int currentModel;
 
     //where to save the generated grasps
     std::string grasp_dir;
@@ -117,9 +124,15 @@ private:
     void moveHandToNextPose();
     void saveGrasps();
     void generateHandPoses();
+    void chooseNewScene(int handId, int modelId);
 
-
-
+    QString modelsDirName;
+    QString handsDirName;
+    std::vector<QString> modelXMLNames;
+    std::vector<QString> handXMLNames;
+    World *world;
+    Robot *rob;
+    Body *obj;
   
 public:
   AutoGraspGenerationDlg(QWidget *parent = 0) : 
@@ -135,6 +148,7 @@ public:
 public slots:
 	void exitButton_clicked();
 	void setMembers( Hand *h, GraspableBody *b );
+    void setWorld( World *w );
 	void variableInputChanged();
 	void variableCheckBoxChanged();
 	void spaceSearchBox_activated( const QString &s );
@@ -166,6 +180,10 @@ public slots:
 	void inputGloveBox_toggled( bool on);
 	void inputLoadButton_clicked();
     void timerUpdate();
+
+    void loadModelsDirButton_clicked();
+    void loadHandsDirButton_clicked();
+    void startAutoGraspButton_clicked();
 
 
 

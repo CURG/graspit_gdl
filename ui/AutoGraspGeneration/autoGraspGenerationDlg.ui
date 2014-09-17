@@ -1,22 +1,20 @@
-<ui version="4.0" >
- <author></author>
- <comment></comment>
- <exportmacro></exportmacro>
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
  <class>autoGraspGenerationDlgUI</class>
- <widget class="QDialog" name="autoGraspGenerationDlgUI" >
-  <property name="geometry" >
+ <widget class="QDialog" name="autoGraspGenerationDlgUI">
+  <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>561</width>
-    <height>552</height>
+    <width>1161</width>
+    <height>558</height>
    </rect>
   </property>
-  <property name="windowTitle" >
+  <property name="windowTitle">
    <string>EigenGrasp Planners</string>
   </property>
-  <widget class="QPushButton" name="exitButton" >
-   <property name="geometry" >
+  <widget class="QPushButton" name="exitButton">
+   <property name="geometry">
     <rect>
      <x>10</x>
      <y>514</y>
@@ -24,12 +22,12 @@
      <height>31</height>
     </rect>
    </property>
-   <property name="text" >
+   <property name="text">
     <string>Exit</string>
    </property>
   </widget>
-  <widget class="Q3GroupBox" name="groupBox3" >
-   <property name="geometry" >
+  <widget class="Q3GroupBox" name="groupBox3">
+   <property name="geometry">
     <rect>
      <x>270</x>
      <y>220</y>
@@ -37,14 +35,14 @@
      <height>90</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Planner</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QLabel" name="textLabel1" >
-    <property name="geometry" >
+   <widget class="QLabel" name="textLabel1">
+    <property name="geometry">
      <rect>
       <x>16</x>
       <y>21</y>
@@ -52,15 +50,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Type:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="plannerResetButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="plannerResetButton">
+    <property name="geometry">
      <rect>
       <x>60</x>
       <y>50</y>
@@ -68,12 +66,12 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Reset</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="plannerInitButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="plannerInitButton">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>50</y>
@@ -81,12 +79,12 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Init</string>
-    </property> 
+    </property>
    </widget>
-   <widget class="QPushButton" name="plannerStartButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="plannerStartButton">
+    <property name="geometry">
      <rect>
       <x>110</x>
       <y>50</y>
@@ -94,15 +92,15 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
-     <string>></string>
+    <property name="text">
+     <string>&gt;</string>
     </property>
-    <property name="shortcut" >
+    <property name="shortcut">
      <string>R</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="plannerTypeBox" >
-    <property name="geometry" >
+   <widget class="QComboBox" name="plannerTypeBox">
+    <property name="geometry">
      <rect>
       <x>50</x>
       <y>20</y>
@@ -111,8 +109,8 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="instantEnergyButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="instantEnergyButton">
+    <property name="geometry">
      <rect>
       <x>200</x>
       <y>50</y>
@@ -120,13 +118,13 @@
       <height>31</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>e</string>
     </property>
    </widget>
   </widget>
-  <widget class="Q3GroupBox" name="groupBox8" >
-   <property name="geometry" >
+  <widget class="Q3GroupBox" name="groupBox8">
+   <property name="geometry">
     <rect>
      <x>270</x>
      <y>10</y>
@@ -134,14 +132,14 @@
      <height>200</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Settings and results</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QPushButton" name="nextGraspButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="nextGraspButton">
+    <property name="geometry">
      <rect>
       <x>80</x>
       <y>151</y>
@@ -149,15 +147,15 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
-     <string>></string>
+    <property name="text">
+     <string>&gt;</string>
     </property>
-    <property name="shortcut" >
+    <property name="shortcut">
      <string>L</string>
-   </property>  
-  </widget>
-   <widget class="QPushButton" name="bestGraspButton" >
-    <property name="geometry" >
+    </property>
+   </widget>
+   <widget class="QPushButton" name="bestGraspButton">
+    <property name="geometry">
      <rect>
       <x>40</x>
       <y>151</y>
@@ -165,12 +163,12 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Best</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="prevGraspButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="prevGraspButton">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>151</y>
@@ -178,15 +176,15 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>&lt;</string>
     </property>
-    <property name="shortcut" >
+    <property name="shortcut">
      <string>U</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="executeGraspButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="executeGraspButton">
+    <property name="geometry">
      <rect>
       <x>120</x>
       <y>151</y>
@@ -194,15 +192,15 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>exec</string>
     </property>
-    <property name="shortcut" >
+    <property name="shortcut">
      <string>K</string>
     </property>
    </widget>
-   <widget class="QLabel" name="textLabel2_3" >
-    <property name="geometry" >
+   <widget class="QLabel" name="textLabel2_3">
+    <property name="geometry">
      <rect>
       <x>27</x>
       <y>129</y>
@@ -210,15 +208,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Show results:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QComboBox" name="energyBox" >
-    <property name="geometry" >
+   <widget class="QComboBox" name="energyBox">
+    <property name="geometry">
      <rect>
       <x>140</x>
       <y>20</y>
@@ -227,8 +225,8 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="textLabel1_2" >
-    <property name="geometry" >
+   <widget class="QLabel" name="textLabel1_2">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
@@ -236,15 +234,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Energy formulation:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QCheckBox" name="setContactsBox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="setContactsBox">
+    <property name="geometry">
      <rect>
       <x>140</x>
       <y>48</y>
@@ -252,12 +250,12 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="textLabel1_5" >
-    <property name="geometry" >
+   <widget class="QLabel" name="textLabel1_5">
+    <property name="geometry">
      <rect>
       <x>22</x>
       <y>48</y>
@@ -265,15 +263,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Preset contacts:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="textLabel1_4" >
-    <property name="geometry" >
+   <widget class="QLabel" name="textLabel1_4">
+    <property name="geometry">
      <rect>
       <x>147</x>
       <y>77</y>
@@ -281,15 +279,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Max:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="currentStepLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="currentStepLabel">
+    <property name="geometry">
      <rect>
       <x>13</x>
       <y>78</y>
@@ -297,15 +295,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Current step: 0</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="timeLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="timeLabel">
+    <property name="geometry">
      <rect>
       <x>13</x>
       <y>99</y>
@@ -313,15 +311,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Time used: 0 sec.</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="Line" name="line1_2" >
-    <property name="geometry" >
+   <widget class="Line" name="line1_2">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>113</y>
@@ -329,18 +327,18 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="frameShape" >
+    <property name="frameShape">
      <enum>QFrame::HLine</enum>
     </property>
-    <property name="frameShadow" >
+    <property name="frameShadow">
      <enum>QFrame::Sunken</enum>
     </property>
-    <property name="orientation" >
+    <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="Line" name="line1_2_2_2" >
-    <property name="geometry" >
+   <widget class="Line" name="line1_2_2_2">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>62</y>
@@ -348,18 +346,18 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="frameShape" >
+    <property name="frameShape">
      <enum>QFrame::HLine</enum>
     </property>
-    <property name="frameShadow" >
+    <property name="frameShadow">
      <enum>QFrame::Sunken</enum>
     </property>
-    <property name="orientation" >
+    <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QLabel" name="rankLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="rankLabel">
+    <property name="geometry">
      <rect>
       <x>142</x>
       <y>135</y>
@@ -367,15 +365,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Rank: 0/0</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="energyLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="energyLabel">
+    <property name="geometry">
      <rect>
       <x>135</x>
       <y>152</y>
@@ -383,15 +381,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Energy: 0</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="iterationLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="iterationLabel">
+    <property name="geometry">
      <rect>
       <x>131</x>
       <y>169</y>
@@ -399,15 +397,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Iteration: 0</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="annStepsEdit" >
-    <property name="geometry" >
+   <widget class="QLineEdit" name="annStepsEdit">
+    <property name="geometry">
      <rect>
       <x>180</x>
       <y>76</y>
@@ -417,8 +415,8 @@
     </property>
    </widget>
   </widget>
-  <widget class="Q3GroupBox" name="onlineDetailsGroup" >
-   <property name="geometry" >
+  <widget class="Q3GroupBox" name="onlineDetailsGroup">
+   <property name="geometry">
     <rect>
      <x>270</x>
      <y>320</y>
@@ -426,14 +424,14 @@
      <height>220</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>OnLine Planning Details</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QLabel" name="objDistLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="objDistLabel">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
@@ -441,15 +439,15 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Object distance:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="solDistLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="solDistLabel">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>40</y>
@@ -457,15 +455,15 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Solution distance:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="onlineStatusLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="onlineStatusLabel">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>60</y>
@@ -473,15 +471,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Status:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="fcBufferLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="fcBufferLabel">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>98</y>
@@ -489,15 +487,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>FC Thread buffer:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="saBufferLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="saBufferLabel">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>79</y>
@@ -505,15 +503,15 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>SimAnn buffer:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="onlineGraspButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="onlineGraspButton">
+    <property name="geometry">
      <rect>
       <x>211</x>
       <y>10</y>
@@ -521,12 +519,12 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Grasp</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="autoGraspBox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="autoGraspBox">
+    <property name="geometry">
      <rect>
       <x>208</x>
       <y>119</y>
@@ -534,12 +532,12 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Auto</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="onlineReleaseButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="onlineReleaseButton">
+    <property name="geometry">
      <rect>
       <x>210</x>
       <y>43</y>
@@ -547,12 +545,12 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Open</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="onlinePlanButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="onlinePlanButton">
+    <property name="geometry">
      <rect>
       <x>210</x>
       <y>76</y>
@@ -560,12 +558,12 @@
       <height>30</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Plan</string>
     </property>
    </widget>
-   <widget class="Line" name="line3" >
-    <property name="geometry" >
+   <widget class="Line" name="line3">
+    <property name="geometry">
      <rect>
       <x>180</x>
       <y>14</y>
@@ -573,18 +571,18 @@
       <height>190</height>
      </rect>
     </property>
-    <property name="frameShape" >
+    <property name="frameShape">
      <enum>QFrame::VLine</enum>
     </property>
-    <property name="frameShadow" >
+    <property name="frameShadow">
      <enum>QFrame::Sunken</enum>
     </property>
-    <property name="orientation" >
+    <property name="orientation">
      <enum>Qt::Vertical</enum>
     </property>
    </widget>
-   <widget class="QCheckBox" name="showCloneBox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="showCloneBox">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>120</y>
@@ -592,12 +590,12 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Show pre-grasp search</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="showSolutionBox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="showSolutionBox">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>140</y>
@@ -605,12 +603,12 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Show current solution</string>
     </property>
    </widget>
-   <widget class="Line" name="line4" >
-    <property name="geometry" >
+   <widget class="Line" name="line4">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>155</y>
@@ -618,18 +616,18 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="frameShape" >
+    <property name="frameShape">
      <enum>QFrame::HLine</enum>
     </property>
-    <property name="frameShadow" >
+    <property name="frameShadow">
      <enum>QFrame::Sunken</enum>
     </property>
-    <property name="orientation" >
+    <property name="orientation">
      <enum>Qt::Horizontal</enum>
     </property>
    </widget>
-   <widget class="QCheckBox" name="useVirtualHandBox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="useVirtualHandBox">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>170</y>
@@ -637,12 +635,12 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Shape virtual hand model</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="useRealBarrettBox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="useRealBarrettBox">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>190</y>
@@ -650,13 +648,13 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Shape real Barrett Hand</string>
     </property>
    </widget>
   </widget>
-  <widget class="Q3GroupBox" name="inputBox" >
-   <property name="geometry" >
+  <widget class="Q3GroupBox" name="inputBox">
+   <property name="geometry">
     <rect>
      <x>10</x>
      <y>420</y>
@@ -664,14 +662,14 @@
      <height>80</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Input</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QPushButton" name="inputLoadButton" >
-    <property name="geometry" >
+   <widget class="QPushButton" name="inputLoadButton">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>50</y>
@@ -679,12 +677,12 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Load from File...</string>
     </property>
    </widget>
-   <widget class="QCheckBox" name="inputGloveBox" >
-    <property name="geometry" >
+   <widget class="QCheckBox" name="inputGloveBox">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
@@ -692,13 +690,13 @@
       <height>21</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Use CyberGlove</string>
     </property>
    </widget>
   </widget>
-  <widget class="Q3GroupBox" name="variableBox" >
-   <property name="geometry" >
+  <widget class="Q3GroupBox" name="variableBox">
+   <property name="geometry">
     <rect>
      <x>10</x>
      <y>10</y>
@@ -706,14 +704,14 @@
      <height>400</height>
     </rect>
    </property>
-   <property name="title" >
+   <property name="title">
     <string>Space Search</string>
    </property>
-   <property name="orientation" >
+   <property name="orientation">
     <enum>Qt::Vertical</enum>
    </property>
-   <widget class="QComboBox" name="spaceSearchBox" >
-    <property name="geometry" >
+   <widget class="QComboBox" name="spaceSearchBox">
+    <property name="geometry">
      <rect>
       <x>60</x>
       <y>20</y>
@@ -722,8 +720,8 @@
      </rect>
     </property>
    </widget>
-   <widget class="QLabel" name="spaceSearchLabel" >
-    <property name="geometry" >
+   <widget class="QLabel" name="spaceSearchLabel">
+    <property name="geometry">
      <rect>
       <x>10</x>
       <y>20</y>
@@ -731,16 +729,119 @@
       <height>20</height>
      </rect>
     </property>
-    <property name="text" >
+    <property name="text">
      <string>Type:</string>
     </property>
-    <property name="wordWrap" >
+    <property name="wordWrap">
      <bool>false</bool>
     </property>
    </widget>
   </widget>
+  <widget class="Q3GroupBox" name="groupBox">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>10</y>
+     <width>561</width>
+     <height>331</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Loading options</string>
+   </property>
+   <widget class="QPushButton" name="loadModelsDirButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>40</y>
+      <width>131</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load Models Dir</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="loadHandsDirButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>150</y>
+      <width>131</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Load Hands Dir</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="modelsDirLbl">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>541</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="wordWrap">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="handsDirLbl">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>190</y>
+      <width>541</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+    <property name="wordWrap">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="startAutoGraspButton">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>270</y>
+      <width>98</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>GO!</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="autoGenStatusLbl">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>270</y>
+      <width>151</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Not running... Yet...</string>
+    </property>
+   </widget>
+  </widget>
  </widget>
- <layoutdefault spacing="6" margin="11" />
+ <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
  <customwidgets>
   <customwidget>
@@ -748,11 +849,10 @@
    <extends>QGroupBox</extends>
    <header>Qt3Support/Q3GroupBox</header>
    <container>1</container>
-   <pixmap></pixmap>
   </customwidget>
  </customwidgets>
  <includes>
-  <include location="global" >vector</include>
+  <include location="global">vector</include>
  </includes>
  <resources/>
  <connections>
@@ -762,31 +862,75 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>exitButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
    </hints>
   </connection>
   <connection>
-   <sender>prevGraspButton</sender>
+   <sender>loadModelsDirButton</sender>
    <signal>clicked()</signal>
    <receiver>autoGraspGenerationDlgUI</receiver>
-   <slot>prevGraspButton_clicked()</slot>
-   <sender>executeGraspButton</sender>		
+   <slot>loadModelsDirButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>loadHandsDirButton</sender>
+   <signal>clicked()</signal>
+   <receiver>autoGraspGenerationDlgUI</receiver>
+   <slot>loadHandsDirButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>startAutoGraspButton</sender>
+   <signal>clicked()</signal>
+   <receiver>autoGraspGenerationDlgUI</receiver>
+   <slot>startAutoGraspButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>executeGraspButton</sender>
    <signal>clicked()</signal>
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>executeGraspButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -798,11 +942,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>bestGraspButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -814,11 +958,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>nextGraspButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -830,11 +974,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>setContactsBox_toggled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -846,11 +990,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>spaceSearchBox_activated(QString)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -862,11 +1006,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>energyBox_activated(QString)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -878,11 +1022,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerTypeBox_activated(QString)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -894,11 +1038,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerReset_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -910,11 +1054,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerInit_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -926,11 +1070,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>plannerStart_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -942,11 +1086,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>onlineGraspButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -958,11 +1102,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>autoGraspBox_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -974,11 +1118,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>onlineReleaseButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -990,11 +1134,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>onlinePlanButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -1006,11 +1150,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>instantEnergyButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -1022,11 +1166,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>showCloneBox_toggled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -1038,11 +1182,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>showSolutionBox_toggled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -1054,11 +1198,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>useRealBarrettBox_toggled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -1070,11 +1214,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>inputGloveBox_toggled(bool)</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -1086,11 +1230,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>inputLoadButton_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>
@@ -1102,11 +1246,11 @@
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>useVirtualHandBox_clicked()</slot>
    <hints>
-    <hint type="sourcelabel" >
+    <hint type="sourcelabel">
      <x>20</x>
      <y>20</y>
     </hint>
-    <hint type="destinationlabel" >
+    <hint type="destinationlabel">
      <x>20</x>
      <y>20</y>
     </hint>

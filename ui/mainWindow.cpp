@@ -765,19 +765,20 @@ void MainWindow::graspContactExaminer_activated()
 
 void MainWindow::autoGraspGeneration_activated()
 {
-    assert(world->getCurrentHand());
-    if (world->getCurrentHand()->getEigenGrasps() == NULL) {
-        fprintf(stderr,"Current hand has no EigenGrasp information!\n");
-        return;
-    }
-    int gb = mUI->graspedBodyBox->currentItem();
-    if ( gb < 0 || world->getNumGB() < gb+1 ) {
-        fprintf(stderr,"No object selected\n");
-        return;
-    }
+    //assert(world->getCurrentHand());
+    //if (world->getCurrentHand()->getEigenGrasps() == NULL) {
+    //    fprintf(stderr,"Current hand has no EigenGrasp information!\n");
+    //    return;
+    //}
+    //int gb = mUI->graspedBodyBox->currentItem();
+    //if ( gb < 0 || world->getNumGB() < gb+1 ) {
+    //    fprintf(stderr,"No object selected\n");
+    //    return;
+    //}
 
     AutoGraspGenerationDlg *dlg = new AutoGraspGenerationDlg(mWindow);
-    dlg->setMembers(world->getCurrentHand(), world->getGB(gb));
+    //dlg->setMembers(world->getCurrentHand(), world->getGB(gb));
+    dlg->setWorld(world);
     dlg->setAttribute(Qt::WA_ShowModal, false);
     dlg->setAttribute(Qt::WA_DeleteOnClose, true);
     dlg->show();
