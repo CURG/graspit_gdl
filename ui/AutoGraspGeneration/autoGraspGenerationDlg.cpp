@@ -88,8 +88,8 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-    millisecondsPerMeshPoint = 10000;
-    meshPointIncrement = 1000;
+    millisecondsPerMeshPoint = 2000;
+    meshPointIncrement = 500;
     currentMeshPointIndex = 0;
     grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
 
@@ -676,20 +676,22 @@ void AutoGraspGenerationDlg::plannerComplete()
 
 void AutoGraspGenerationDlg::plannerInit_clicked()
 {  
-  assert(world->getCurrentHand());
-  if (world->getCurrentHand()->getEigenGrasps() == NULL) {
-      fprintf(stderr,"Current hand has no EigenGrasp information!\n");
+
+    assert(world->getCurrentHand());
+    if (world->getCurrentHand()->getEigenGrasps() == NULL) {
+        fprintf(stderr,"Current hand has no EigenGrasp information!\n");
+        return;
+    }
+
+    if (world->getNumGB() > 1) {
+      fprintf(stderr,"Too many graspable bodies!\n");
       return;
-  }
+    }
 
-  if (world->getNumGB() > 1) {
-    fprintf(stderr,"Too many graspable bodies!\n");
-    return;
-  }
+    this->setMembers(world->getCurrentHand(), world->getGB(0));
+    
+    spaceSearchBox_activated(QString("Approach"));
 
-  this->setMembers(world->getCurrentHand(), world->getGB(0));
-  
-  spaceSearchBox_activated(QString("Approach"));
 
   QString s = plannerTypeBox->currentText();
   if (s == QString("Sim. Ann.")) {
@@ -712,6 +714,7 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
 
   } else if (s == QString("Online") ) {
     if (mPlanner) delete mPlanner;
+    DBGA("HELLO!");
     mPlanner = new OnLinePlanner(mHand);
     ((OnLinePlanner*)mPlanner)->setModelState(mHandObjectState);
     energyBox->setEnabled(TRUE);
@@ -822,18 +825,18 @@ void AutoGraspGenerationDlg::generateHandPoses()
 
 void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 {
-  if (rob != NULL) {
-    world->destroyElement(rob, false);
-
-  }
+  //if (rob != NULL) {
+  //  world->removeElementFromSceneGraph(rob);
+  //  world->destroyElement(rob, false);
+  //}
   if (obj != NULL) {
-    //world->removeElementFromSceneGraph(obj);
     world->destroyElement(obj, false);
   }
 
 
-  rob = world->importRobot(handXMLNames[handId]);
+  //rob = world->importRobot(handXMLNames[handId]);
   obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
+
 
 }
 
@@ -937,7 +940,12 @@ void AutoGraspGenerationDlg::timerUpdate()
         }
         DBGA("Hand: " << currentHand << " Model:" << currentModel);
         //start it for next hand/model combo
+
+        plannerTypeBox_activated("Multi-Threaded");
+        plannerTypeBox_activated("Online");
+
         plannerInit_clicked();
+
         startPlanner();
 
     }
