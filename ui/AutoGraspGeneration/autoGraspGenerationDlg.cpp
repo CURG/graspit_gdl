@@ -88,8 +88,8 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-    millisecondsPerMeshPoint = 30000;
-    meshPointIncrement = 10;
+    millisecondsPerMeshPoint = 10000;
+    meshPointIncrement = 1000;
     currentMeshPointIndex = 0;
     grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
 
@@ -822,10 +822,14 @@ void AutoGraspGenerationDlg::generateHandPoses()
 
 void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 {
-  if (rob != NULL)
-    world->destroyElement(rob, true);
-  if (obj != NULL)
-    world->destroyElement(obj, true);
+  if (rob != NULL) {
+    world->destroyElement(rob, false);
+
+  }
+  if (obj != NULL) {
+    //world->removeElementFromSceneGraph(obj);
+    world->destroyElement(obj, false);
+  }
 
 
   rob = world->importRobot(handXMLNames[handId]);
@@ -921,15 +925,24 @@ void AutoGraspGenerationDlg::timerUpdate()
     {
         stopPlanner();
         saveGrasps();
-    }
-    else
-    {
+
+        //new model/hand combo!
         currentModel++;
         if (currentHand < handXMLNames.size() && currentModel < modelXMLNames.size())
           chooseNewScene(currentHand, currentModel); 
-        else if (currentModel > modelXMLNames.size()) {
-          currentHand++; currentModel = 0;
+        else if (currentModel > modelXMLNames.size() && currentHand <= handXMLNames.size()) {
+          currentHand++; currentModel = 0; chooseNewScene(currentHand, currentModel);
+        } else {
+          return;
         }
+        DBGA("Hand: " << currentHand << " Model:" << currentModel);
+        //start it for next hand/model combo
+        plannerInit_clicked();
+        startPlanner();
+
+    }
+    else
+    {
         moveHandToNextPose();
     }
 }
