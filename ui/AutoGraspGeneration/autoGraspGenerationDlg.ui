@@ -823,7 +823,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>GO!</string>
+     <string>Load!</string>
     </property>
    </widget>
    <widget class="QLabel" name="autoGenStatusLbl">

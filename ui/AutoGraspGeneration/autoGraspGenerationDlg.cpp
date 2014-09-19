@@ -149,13 +149,17 @@ void AutoGraspGenerationDlg::init()
   inputGloveBox->setEnabled(FALSE);
   inputLoadButton->setEnabled(FALSE);
 
-  handsDirName = QString(getenv("GRASPIT"))+QString("/models/robots"));
+  DBGA("Attempt.");
+  handsDirName = QString(getenv("GRASPIT"))+QString("/models/robots");
   handsDirLbl->setText(handsDirName);
 
-  modelsDirName = QString(getenv("GRASPIT"))+QString("/models/object_database"));
+  modelsDirName = QString(getenv("GRASPIT"))+QString("/models/object_database");
   modelsDirLbl->setText(modelsDirName);
 
- 
+  plannerTypeBox->setEnabled(FALSE);
+  plannerInitButton->setEnabled(FALSE);
+  spaceSearchBox->setEnabled(FALSE);
+
 }
 
 
@@ -535,6 +539,7 @@ void AutoGraspGenerationDlg::updateResults(bool render, bool execute)
 
 void AutoGraspGenerationDlg::updateStatus()
 {
+
   PlannerState s = DONE;
   if (mPlanner) s = mPlanner->getState();
   DBGP("Update Layout");
@@ -682,20 +687,20 @@ void AutoGraspGenerationDlg::plannerComplete()
 void AutoGraspGenerationDlg::plannerInit_clicked()
 {  
 
-    assert(world->getCurrentHand());
-    if (world->getCurrentHand()->getEigenGrasps() == NULL) {
-        fprintf(stderr,"Current hand has no EigenGrasp information!\n");
-        return;
-    }
-
-    if (world->getNumGB() > 1) {
-      fprintf(stderr,"Too many graspable bodies!\n");
+  assert(world->getCurrentHand());
+  if (world->getCurrentHand()->getEigenGrasps() == NULL) {
+      fprintf(stderr,"Current hand has no EigenGrasp information!\n");
       return;
-    }
+  }
 
-    this->setMembers(world->getCurrentHand(), world->getGB(0));
-    
-    spaceSearchBox_activated(spaceSearchBox->currentText());
+  if (world->getNumGB() > 1) {
+    fprintf(stderr,"Too many graspable bodies!\n");
+    return;
+  }
+
+  this->setMembers(world->getCurrentHand(), world->getGB(0));
+  
+  spaceSearchBox_activated(spaceSearchBox->currentText());
 
 
   QString s = plannerTypeBox->currentText();
@@ -743,6 +748,9 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
 
   QObject::connect(mPlanner,SIGNAL(update()),this,SLOT(plannerUpdate()));
   QObject::connect(mPlanner,SIGNAL(complete()),this,SLOT(plannerComplete()));
+
+  spaceSearchBox->setEnabled(TRUE);
+  plannerTypeBox->setEnabled(TRUE);
 
   updateStatus();
   plannerReset_clicked();  
@@ -833,15 +841,15 @@ void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
   //  world->removeElementFromSceneGraph(rob);
   //  world->destroyElement(rob, false);
   //}
+
   if (obj != NULL) {
     world->destroyElement(obj, false);
   }
 
 
   //rob = world->importRobot(handXMLNames[handId]);
+
   obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
-
-
 }
 
 void AutoGraspGenerationDlg::moveHandToNextPose()
@@ -930,30 +938,30 @@ void AutoGraspGenerationDlg::timerUpdate()
 
     if (cloud_with_normals.size() < currentMeshPointIndex)
     {
-        stopPlanner();
-        saveGrasps();
+      stopPlanner();
+      saveGrasps();
 
-        //new model/hand combo!
-        currentModel++;
-        if (currentHand < handXMLNames.size() && currentModel < modelXMLNames.size())
-          chooseNewScene(currentHand, currentModel); 
-        else if (currentModel > modelXMLNames.size() && currentHand <= handXMLNames.size()) {
-          currentHand++; currentModel = 0; chooseNewScene(currentHand, currentModel);
-        } else {
-          return;
-        }
-        DBGA("Hand: " << currentHand << " Model:" << currentModel);
-        //start it for next hand/model combo
+      //new model/hand combo!
+      currentModel++;
+      if (currentHand < handXMLNames.size() && currentModel < modelXMLNames.size())
+        chooseNewScene(currentHand, currentModel); 
+      else if (currentModel > modelXMLNames.size() && currentHand <= handXMLNames.size()) {
+        currentHand++; currentModel = 0; chooseNewScene(currentHand, currentModel);
+      } else {
+        return;
+      }
+      DBGA("Hand: " << currentHand << " Model:" << currentModel);
+      //start it for next hand/model combo
 
-        // Reset planner
-        world->setCurrentPlanner(NULL);
-        delete mPlanner;
-        mPlanner = NULL;
+      // Reset planner
+      world->setCurrentPlanner(NULL);
+      delete mPlanner;
+      mPlanner = NULL;
 
-        updateStatus();
+      updateStatus();
 
-        plannerInit_clicked();
-        startPlanner();
+      plannerInit_clicked();
+      startPlanner();
 
     }
     else
@@ -1242,10 +1250,6 @@ void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
     rob = world->importRobot(handXMLNames[currentHand]);
     obj = world->importBody("GraspableBody", modelXMLNames[currentModel]);
 
-
+    plannerInitButton->setEnabled(TRUE);
 
 }
-
-
-
-
