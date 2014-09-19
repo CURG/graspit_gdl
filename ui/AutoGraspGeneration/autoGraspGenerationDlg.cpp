@@ -149,6 +149,11 @@ void AutoGraspGenerationDlg::init()
   inputGloveBox->setEnabled(FALSE);
   inputLoadButton->setEnabled(FALSE);
 
+  handsDirName = QString(getenv("GRASPIT"))+QString("/models/robots"));
+  handsDirLbl->setText(handsDirName);
+
+  modelsDirName = QString(getenv("GRASPIT"))+QString("/models/object_database"));
+  modelsDirLbl->setText(modelsDirName);
 
  
 }
@@ -690,7 +695,7 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
 
     this->setMembers(world->getCurrentHand(), world->getGB(0));
     
-    spaceSearchBox_activated(QString("Approach"));
+    spaceSearchBox_activated(spaceSearchBox->currentText());
 
 
   QString s = plannerTypeBox->currentText();
@@ -714,7 +719,6 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
 
   } else if (s == QString("Online") ) {
     if (mPlanner) delete mPlanner;
-    DBGA("HELLO!");
     mPlanner = new OnLinePlanner(mHand);
     ((OnLinePlanner*)mPlanner)->setModelState(mHandObjectState);
     energyBox->setEnabled(TRUE);
@@ -941,11 +945,14 @@ void AutoGraspGenerationDlg::timerUpdate()
         DBGA("Hand: " << currentHand << " Model:" << currentModel);
         //start it for next hand/model combo
 
-        plannerTypeBox_activated("Multi-Threaded");
-        plannerTypeBox_activated("Online");
+        // Reset planner
+        world->setCurrentPlanner(NULL);
+        delete mPlanner;
+        mPlanner = NULL;
+
+        updateStatus();
 
         plannerInit_clicked();
-
         startPlanner();
 
     }
@@ -1227,7 +1234,7 @@ void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
       DBGA(" --- " << handXMLNames[i].toStdString());
     }
 
-    autoGenStatusLbl->setText("HIT THE OTHER GO BUTTON...");
+    autoGenStatusLbl->setText("Ready...");
 
     currentHand = 0;
     currentModel = 0;
