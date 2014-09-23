@@ -95,6 +95,6 @@
         <referenceLocation>0 0 -112.0</referenceLocation>
         <direction>0 0 -1</direction>
     </approachDirection>
-<virtualContacts>virtual/gripper_contacts3.vgr</virtualContacts>
+<virtualContacts>virtual/gripper_contacts_full_coverage.vgr</virtualContacts>
 
 </robot>

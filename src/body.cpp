@@ -219,8 +219,8 @@ Body::loadFromXml(const TiXmlElement *root, QString rootPath)
 	const TiXmlElement* element = findXmlElement(root,"material");
 	QString valueStr;
 	if(element == NULL){
-		DBGA("No material type found; using default.");
-		material = myWorld->getMaterialIdx("wood");
+		DBGA("No material type found; using default. (rubber)");
+		material = myWorld->getMaterialIdx("rubber");
 	} else {
 		valueStr = element->GetText();
 		if (!valueStr.isEmpty()) {
@@ -230,8 +230,8 @@ Body::loadFromXml(const TiXmlElement *root, QString rootPath)
 				return FAILURE;
 			}
 		} else{
-			DBGA("No material type found; using default.");
-			material = myWorld->getMaterialIdx("wood");
+			DBGA("No material type found; using default. (rubber)");
+			material = myWorld->getMaterialIdx("rubber");
 		}
 	}
 

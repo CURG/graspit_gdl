@@ -88,7 +88,7 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-    millisecondsPerMeshPoint = 2000;
+    millisecondsPerMeshPoint = 3000;
     meshPointIncrement = 500;
     currentMeshPointIndex = 0;
     grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
@@ -702,7 +702,6 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
   
   spaceSearchBox_activated(spaceSearchBox->currentText());
 
-
   QString s = plannerTypeBox->currentText();
   if (s == QString("Sim. Ann.")) {
     if (mPlanner) delete mPlanner;
@@ -729,7 +728,7 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
     energyBox->setEnabled(TRUE);
     energyBox->setCurrentItem(2);
     QString n;
-    n.setNum(3000);
+    n.setNum(5000);
     annStepsEdit->setText(n);
     QObject::connect(mPlanner,SIGNAL(update()),this,SLOT(onlinePlannerUpdate())); 
   }
@@ -934,7 +933,7 @@ void AutoGraspGenerationDlg::timerUpdate()
 {
     std::cout << "timer update called" << std::endl;
     std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
-    std::cout << "currentHandPositionIndex" << currentMeshPointIndex << std::endl;
+    std::cout << "currentHandPositionIndex " << currentMeshPointIndex << std::endl;
 
     if (cloud_with_normals.size() < currentMeshPointIndex)
     {
@@ -966,6 +965,8 @@ void AutoGraspGenerationDlg::timerUpdate()
     }
     else
     {
+
+        meshPointIncrement = (cloud_with_normals.size() / 1000);
         moveHandToNextPose();
     }
 }
