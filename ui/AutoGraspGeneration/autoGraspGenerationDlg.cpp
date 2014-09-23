@@ -687,12 +687,12 @@ void AutoGraspGenerationDlg::plannerComplete()
 void AutoGraspGenerationDlg::plannerInit_clicked()
 {  
 
+  // Set up the world with the hand
   assert(world->getCurrentHand());
   if (world->getCurrentHand()->getEigenGrasps() == NULL) {
       fprintf(stderr,"Current hand has no EigenGrasp information!\n");
       return;
   }
-
   if (world->getNumGB() > 1) {
     fprintf(stderr,"Too many graspable bodies!\n");
     return;
@@ -700,47 +700,20 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
 
   this->setMembers(world->getCurrentHand(), world->getGB(0));
   
+  // Makes sure "approach" is the type of space search being used
   spaceSearchBox_activated(spaceSearchBox->currentText());
 
-  QString s = plannerTypeBox->currentText();
-  if (s == QString("Sim. Ann.")) {
-    if (mPlanner) delete mPlanner;
-    mPlanner = new SimAnnPlanner(mHand);
-    ((SimAnnPlanner*)mPlanner)->setModelState(mHandObjectState);
-    energyBox->setEnabled(TRUE);
-  } else if (s == QString("Loop")) {
-    if (mPlanner) delete mPlanner;
-    mPlanner = new LoopPlanner(mHand);
-    ((LoopPlanner*)mPlanner)->setModelState(mHandObjectState);
-    energyBox->setEnabled(TRUE);
-  } else if (s == QString("Multi-Threaded")) {
-    if (mPlanner) delete mPlanner;
-    mPlanner = new GuidedPlanner(mHand);
-    ((GuidedPlanner*)mPlanner)->setModelState(mHandObjectState);
-    energyBox->setCurrentItem(2);
-    energyBox->setEnabled(FALSE);
+  // Use the online type planner
+  if (mPlanner) delete mPlanner;
+  mPlanner = new OnLinePlanner(mHand);
+  ((OnLinePlanner*)mPlanner)->setModelState(mHandObjectState);
+  energyBox->setEnabled(TRUE);
+  energyBox->setCurrentItem(2);
+  QString n;
+  n.setNum(5000);
+  annStepsEdit->setText(n);
+  QObject::connect(mPlanner,SIGNAL(update()),this,SLOT(onlinePlannerUpdate())); 
 
-
-  } else if (s == QString("Online") ) {
-    if (mPlanner) delete mPlanner;
-    mPlanner = new OnLinePlanner(mHand);
-    ((OnLinePlanner*)mPlanner)->setModelState(mHandObjectState);
-    energyBox->setEnabled(TRUE);
-    energyBox->setCurrentItem(2);
-    QString n;
-    n.setNum(5000);
-    annStepsEdit->setText(n);
-    QObject::connect(mPlanner,SIGNAL(update()),this,SLOT(onlinePlannerUpdate())); 
-  }
-
-
-  else if ( s == QString("Time Test") ) {
-    if (mPlanner) delete mPlanner;
-    mPlanner = new MTTester(mHand);
-  } else {
-    fprintf(stderr,"Unknown planner type requested\n");
-    return;
-  } 
 
   graspItGUI->getIVmgr()->getWorld()->setCurrentPlanner(mPlanner);
 
@@ -749,15 +722,11 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
   QObject::connect(mPlanner,SIGNAL(complete()),this,SLOT(plannerComplete()));
 
   spaceSearchBox->setEnabled(TRUE);
-  plannerTypeBox->setEnabled(TRUE);
 
   updateStatus();
   plannerReset_clicked();  
 
 }
-
-
-
 
 #include <set>
 bool operator<(const position & a, const position & b)
@@ -836,17 +805,9 @@ void AutoGraspGenerationDlg::generateHandPoses()
 
 void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 {
-  //if (rob != NULL) {
-  //  world->removeElementFromSceneGraph(rob);
-  //  world->destroyElement(rob, false);
-  //}
-
   if (obj != NULL) {
     world->destroyElement(obj, false);
   }
-
-
-  //rob = world->importRobot(handXMLNames[handId]);
 
   obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
 }
@@ -854,35 +815,35 @@ void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 void AutoGraspGenerationDlg::moveHandToNextPose()
 {
 
-    pcl::PointNormal pointNormalInBodyCoord = this->cloud_with_normals.at(currentMeshPointIndex);
+  pcl::PointNormal pointNormalInBodyCoord = this->cloud_with_normals.at(currentMeshPointIndex);
 
-    double x = pointNormalInBodyCoord.x;
-    double y = pointNormalInBodyCoord.y;
-    double z = pointNormalInBodyCoord.z;
+  double x = pointNormalInBodyCoord.x;
+  double y = pointNormalInBodyCoord.y;
+  double z = pointNormalInBodyCoord.z;
 
-    double normal_x = pointNormalInBodyCoord.normal_x;
-    double normal_y = pointNormalInBodyCoord.normal_y;
-    double normal_z = pointNormalInBodyCoord.normal_z;
+  double normal_x = pointNormalInBodyCoord.normal_x;
+  double normal_y = pointNormalInBodyCoord.normal_y;
+  double normal_z = pointNormalInBodyCoord.normal_z;
 
 
-//http://stackoverflow.com/questions/21622956/how-to-convert-direction-vector-to-euler-angles
-//    The nose of that airplane points towards the direction vector
-//    D=(XD,YD,ZD) .
-      vec3 D = vec3(normal_x,normal_y,normal_z);
+  // http://stackoverflow.com/questions/21622956/how-to-convert-direction-vector-to-euler-angles
+  //     The nose of that airplane points towards the direction vector
+  //     D=(XD,YD,ZD) .
+  vec3 D = vec3(normal_x,normal_y,normal_z);
 
-//    Towards the roof is the up vector
-//    U=(XU,YU,ZU) .
-      vec3 U = D * vec3(0,1,0) * D;
+  // Towards the roof is the up vector
+  // U=(XU,YU,ZU) .
+  vec3 U = D * vec3(0,1,0) * D;
 
-    transf worldToObject = mPlanner->getTargetState()->getObject()->getTran();
-    transf meshPointToApproachTran = translate_transf(vec3(-150*normal_x, -150*normal_y, -150*normal_z));
-    transf orientHand = rotXYZ(0,-M_PI/2.0,0) * coordinate_transf(position(x,y,z),D,U) ;
+  transf worldToObject = mPlanner->getTargetState()->getObject()->getTran();
+  transf meshPointToApproachTran = translate_transf(vec3(-150*normal_x, -150*normal_y, -150*normal_z));
+  transf orientHand = rotXYZ(0,-M_PI/2.0,0) * coordinate_transf(position(x,y,z),D,U) ;
 
-    mHand->setTran( orientHand * meshPointToApproachTran*worldToObject );
+  mHand->setTran( orientHand * meshPointToApproachTran*worldToObject );
 
-    //showSingleNormal(mPlanner->getTargetState()->getObject(), cloud_with_normals,currentHandPositionIndex );
+  // showSingleNormal(mPlanner->getTargetState()->getObject(), cloud_with_normals,currentHandPositionIndex );
 
-    currentMeshPointIndex+=meshPointIncrement;
+  currentMeshPointIndex+=meshPointIncrement;
 
 }
 
@@ -931,54 +892,49 @@ void AutoGraspGenerationDlg::plannerReset_clicked()
 
 void AutoGraspGenerationDlg::timerUpdate()
 {
-    std::cout << "timer update called" << std::endl;
-    std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
-    std::cout << "currentHandPositionIndex " << currentMeshPointIndex << std::endl;
+  std::cout << "timer update called" << std::endl;
+  std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
+  std::cout << "currentHandPositionIndex " << currentMeshPointIndex << std::endl;
 
-    if (cloud_with_normals.size() < currentMeshPointIndex)
-    {
-      stopPlanner();
-      saveGrasps();
+  if (cloud_with_normals.size() < currentMeshPointIndex)
+  {
+    stopPlanner();
+    saveGrasps();
 
-      //new model/hand combo!
-      currentModel++;
-      if (currentHand < handXMLNames.size() && currentModel < modelXMLNames.size())
-        chooseNewScene(currentHand, currentModel); 
-      else if (currentModel > modelXMLNames.size() && currentHand <= handXMLNames.size()) {
-        currentHand++; currentModel = 0; chooseNewScene(currentHand, currentModel);
-      } else {
-        return;
-      }
-      DBGA("Hand: " << currentHand << " Model:" << currentModel);
-      //start it for next hand/model combo
+    // New object
+    currentModel++;
+    if (currentModel < modelXMLNames.size())
+      chooseNewScene(currentHand, currentModel); 
+    else 
+      return;
 
-      // Reset planner
-      world->setCurrentPlanner(NULL);
-      delete mPlanner;
-      mPlanner = NULL;
+    DBGA("Model:" << currentModel);
 
-      updateStatus();
+    // Reset planner
+    world->setCurrentPlanner(NULL);
+    delete mPlanner;
+    mPlanner = NULL;
 
-      plannerInit_clicked();
-      startPlanner();
+    updateStatus();
 
-    }
-    else
-    {
+    plannerInit_clicked();
+    startPlanner();
 
-        meshPointIncrement = (cloud_with_normals.size() / 1000);
-        moveHandToNextPose();
-    }
+  }
+  else
+  {
+    meshPointIncrement = (cloud_with_normals.size() / 1000);
+    moveHandToNextPose();
+  }
 }
 
 void AutoGraspGenerationDlg::startPlanner()
 {
-    generateHandPoses();
-    seedHandMovementTimer->start(millisecondsPerMeshPoint);
-    mPlanner->startPlanner();
-    updateStatus();
+  generateHandPoses();
+  seedHandMovementTimer->start(millisecondsPerMeshPoint);
+  mPlanner->startPlanner();
+  updateStatus();
 }
-
 
 void AutoGraspGenerationDlg::stopPlanner()
 {
@@ -988,8 +944,7 @@ void AutoGraspGenerationDlg::stopPlanner()
 }
 
 void AutoGraspGenerationDlg::plannerStart_clicked()
-{	
-  
+{
   if (!mPlanner->isActive()){
     startPlanner();
   } else {
@@ -1159,23 +1114,23 @@ void AutoGraspGenerationDlg::inputLoadButton_clicked()
 
 void AutoGraspGenerationDlg::loadModelsDirButton_clicked()
 {
-    QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GRASPIT"))+QString("/models/object_database")) );
-    if ( fn.isEmpty() ) {
-        return;
-    }
-    modelsDirName = fn;
-    modelsDirLbl->setText(modelsDirName);
+  QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GRASPIT"))+QString("/models/object_database")) );
+  if ( fn.isEmpty() ) {
+    return;
+  }
+  modelsDirName = fn;
+  modelsDirLbl->setText(modelsDirName);
 
 }
 
 void AutoGraspGenerationDlg::loadHandsDirButton_clicked()
 {
-    QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GRASPIT"))+QString("/models/robots")) );
-    if ( fn.isEmpty() ) {
-        return;
-    }
-    handsDirName = fn;
-    handsDirLbl->setText(handsDirName);
+  QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GRASPIT"))+QString("/models/robots")) );
+  if ( fn.isEmpty() ) {
+    return;
+  }
+  handsDirName = fn;
+  handsDirLbl->setText(handsDirName);
 
 }
 
@@ -1183,74 +1138,75 @@ void AutoGraspGenerationDlg::loadHandsDirButton_clicked()
 void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
 {
 
-    autoGenStatusLbl->setText("Collecting models and hands...");
+  autoGenStatusLbl->setText("Collecting models and hands...");
 
 
-    struct dirent *parentEntry; 
-    DIR *parentDir;
-    DIR *childDir;
+  struct dirent *parentEntry; 
+  DIR *parentDir;
+  DIR *childDir;
 
-    modelXMLNames.clear();
-    handXMLNames.clear();
+  modelXMLNames.clear();
+  handXMLNames.clear();
 
-    // --------------------------- MODELS ---------------------------
-    DBGA("Looking for models in " << modelsDirName.toStdString() << "...");
+  // --------------------------- MODELS ---------------------------
+  DBGA("Looking for models in " << modelsDirName.toStdString() << "...");
 
-    parentDir = opendir(modelsDirName);
-    if (parentDir == NULL) {
-      DBGA("Please selected a models directory...");
-      return;
-    }
+  parentDir = opendir(modelsDirName);
+  if (parentDir == NULL) {
+    DBGA("Please selected a models directory...");
+    return;
+  }
 
-    while ((parentEntry = readdir(parentDir))) {
-      if (parentEntry->d_name[0] != '.') {
-        childDir = opendir(modelsDirName + "/" + parentEntry->d_name);
-        if (childDir != NULL) {
-          modelXMLNames.push_back(QString(modelsDirName + "/" + parentEntry->d_name + "/" + parentEntry->d_name + ".xml"));
-          closedir(childDir);
-        }
+  while ((parentEntry = readdir(parentDir))) {
+    if (parentEntry->d_name[0] != '.') {
+      childDir = opendir(modelsDirName + "/" + parentEntry->d_name);
+      if (childDir != NULL) {
+        modelXMLNames.push_back(QString(modelsDirName + "/" + parentEntry->d_name + "/" + parentEntry->d_name + ".xml"));
+        closedir(childDir);
       }
     }
-    closedir(parentDir);
+  }
+  closedir(parentDir);
 
-    DBGA("FOUND MODELS!");
-    for (unsigned int i=0; i<modelXMLNames.size(); i++) {
-      DBGA(" --- " << modelXMLNames[i].toStdString());
-    }
+  DBGA("Models:");
+  for (unsigned int i=0; i<modelXMLNames.size(); i++) {
+    DBGA(" --- " << modelXMLNames[i].toStdString());
+  }
 
-    // --------------------------- HANDS ---------------------------
-    DBGA("Looking for hands in " << handsDirName.toStdString() << "...");
+  // --------------------------- HANDS ---------------------------
+  // Note: Right now, the code has been rewritten to only support one hand
+  DBGA("Looking for hands in " << handsDirName.toStdString() << "...");
 
-    parentDir = opendir(handsDirName);
-    if (parentDir == NULL) {
-      DBGA("Please selected a hands directory...");
-      return;
-    }
+  parentDir = opendir(handsDirName);
+  if (parentDir == NULL) {
+    DBGA("Please selected a hands directory...");
+    return;
+  }
 
-    while ((parentEntry = readdir(parentDir))) {
-      if (parentEntry->d_name[0] != '.') {
-        childDir = opendir(handsDirName + "/" + parentEntry->d_name);
-        if (childDir != NULL) {
-          handXMLNames.push_back(QString(handsDirName + "/" + parentEntry->d_name + "/" + parentEntry->d_name + ".xml"));
-          closedir(childDir);
-        }
+  while ((parentEntry = readdir(parentDir))) {
+    if (parentEntry->d_name[0] != '.') {
+      childDir = opendir(handsDirName + "/" + parentEntry->d_name);
+      if (childDir != NULL) {
+        handXMLNames.push_back(QString(handsDirName + "/" + parentEntry->d_name + "/" + parentEntry->d_name + ".xml"));
+        closedir(childDir);
       }
     }
-    closedir(parentDir);
+  }
+  closedir(parentDir);
 
-    DBGA("FOUND HANDS!");
-    for (unsigned int i=0; i<handXMLNames.size(); i++) {
-      DBGA(" --- " << handXMLNames[i].toStdString());
-    }
+  DBGA("Hands:");
+  for (unsigned int i=0; i<handXMLNames.size(); i++) {
+    DBGA(" --- " << handXMLNames[i].toStdString());
+  }
 
-    autoGenStatusLbl->setText("Ready...");
+  autoGenStatusLbl->setText("Ready...");
 
-    currentHand = 0;
-    currentModel = 0;
+  currentHand = 0;
+  currentModel = 0;
 
-    rob = world->importRobot(handXMLNames[currentHand]);
-    obj = world->importBody("GraspableBody", modelXMLNames[currentModel]);
+  rob = world->importRobot(handXMLNames[currentHand]);
+  obj = world->importBody("GraspableBody", modelXMLNames[currentModel]);
 
-    plannerInitButton->setEnabled(TRUE);
+  plannerInitButton->setEnabled(TRUE);
 
 }
