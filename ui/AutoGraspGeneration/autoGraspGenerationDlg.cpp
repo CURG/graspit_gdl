@@ -88,8 +88,8 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-    millisecondsPerMeshPoint = 3000;
-    meshPointIncrement = 500;
+    millisecondsPerMeshPoint = 30000;
+    meshPointIncrement = 0;
     currentMeshPointIndex = 0;
     grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
 
@@ -101,7 +101,7 @@ void AutoGraspGenerationDlg::init()
   energyBox->insertItem("Contacts AND Quality");
   energyBox->insertItem("Autograsp Quality");
   energyBox->insertItem("Guided Autograsp");
-  energyBox->setCurrentItem(1);//CHANGED!
+  energyBox->setCurrentItem(0);//CHANGED!
   plannerTypeBox->insertItem("Sim. Ann.");
   plannerTypeBox->insertItem("Loop");
   plannerTypeBox->insertItem("Multi-Threaded");
@@ -700,6 +700,12 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
 
   this->setMembers(world->getCurrentHand(), world->getGB(0));
   
+  // Set all objects in the world to be rubber (just in case default set doesn't work)
+  for (int i=0;i<world->getNumSelectedBodies();i++)
+    world->getSelectedBody(i)->setMaterial(5);
+  world->updateGrasps();
+
+
   // Makes sure "approach" is the type of space search being used
   spaceSearchBox_activated(spaceSearchBox->currentText());
 
@@ -708,7 +714,7 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
   mPlanner = new OnLinePlanner(mHand);
   ((OnLinePlanner*)mPlanner)->setModelState(mHandObjectState);
   energyBox->setEnabled(TRUE);
-  energyBox->setCurrentItem(2);
+  energyBox->setCurrentItem(0);
   QString n;
   n.setNum(5000);
   annStepsEdit->setText(n);
