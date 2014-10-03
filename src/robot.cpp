@@ -296,8 +296,8 @@ Robot::loadFromXml(const TiXmlElement* root,QString rootPath)
 	if(element){
 		valueStr = element->GetText();
 		valueStr = valueStr.stripWhiteSpace();
-		QString contactFile = rootPath + valueStr;
-		if (loadContactData(contactFile)==SUCCESS) {
+		virtualContactFile = rootPath + valueStr;
+		if (loadContactData(virtualContactFile)==SUCCESS) {
 			DBGA("Loaded virtual contacts from file " << valueStr.latin1());
 			showVirtualContacts(true);
 		} else {

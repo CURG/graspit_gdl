@@ -88,13 +88,13 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-    millisecondsPerMeshPoint = 30000;
-    meshPointIncrement = 0;
-    currentMeshPointIndex = 0;
-    grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
+  millisecondsPerMeshPoint = 30000;
+  meshPointIncrement = 0;
+  currentMeshPointIndex = 0;
+  grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
 
-    seedHandMovementTimer = new QTimer(this);
-    connect(seedHandMovementTimer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
+  seedHandMovementTimer = new QTimer(this);
+  connect(seedHandMovementTimer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
 
   energyBox->insertItem("Hand Contacts");
   energyBox->insertItem("Potential Quality");
@@ -814,7 +814,7 @@ void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
   if (obj != NULL) {
     world->destroyElement(obj, false);
   }
-
+  DBGA("Importing new model: " << modelXMLNames[modelId].toStdString());
   obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
 }
 
@@ -875,6 +875,7 @@ void AutoGraspGenerationDlg::saveGrasps()
     boost::filesystem3::create_directories(fullGraspPath);
 
     FILE *f = fopen(fullGraspPathAndFilename.c_str(),"w");
+    fprintf(f,"virtual_contacts: %s\n\n", rob->getVirtualContactsFile().toStdString().c_str());
     for (int i=0; i<mPlanner->getListSize(); i++)
     {
         fprintf(f,"graspId: %d\n", i);
@@ -929,7 +930,7 @@ void AutoGraspGenerationDlg::timerUpdate()
   }
   else
   {
-    meshPointIncrement = (cloud_with_normals.size() / 1000);
+    meshPointIncrement = (cloud_with_normals.size() / 60);
     moveHandToNextPose();
   }
 }
@@ -1207,8 +1208,12 @@ void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
 
   autoGenStatusLbl->setText("Ready...");
 
-  currentHand = 0;
+  currentHand = 1;
   currentModel = 0;
+
+  DBGA("\nStarting with hand: " << handXMLNames[currentHand].toStdString());
+  DBGA("Starting with model: " << modelXMLNames[currentModel].toStdString());
+  DBGA("\n");
 
   rob = world->importRobot(handXMLNames[currentHand]);
   obj = world->importBody("GraspableBody", modelXMLNames[currentModel]);

@@ -122,6 +122,9 @@ private:
   //! A pointer to an optional mount piece link
   Link *mountPiece;
 
+  // The full path to the virtual contacts file (if it exists)
+  QString virtualContactFile;
+
 protected:
 
   // The structure of the robot itself	
@@ -392,6 +395,9 @@ protected:
 
   //! Returns the total number of virtual contacts on this robot
   int getNumVirtualContacts();
+
+  //! Returns the total number of virtual contacts on this robot
+  QString getVirtualContactsFile() {return virtualContactFile;}
 
   //! Shows or hides virtual contacts
   void showVirtualContacts(bool on);
