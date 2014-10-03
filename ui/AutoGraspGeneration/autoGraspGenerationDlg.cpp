@@ -88,7 +88,7 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-  millisecondsPerMeshPoint = 3000;
+  millisecondsPerMeshPoint = 30000;
   meshPointIncrement = 0;
   currentMeshPointIndex = 0;
   grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
@@ -938,7 +938,7 @@ void AutoGraspGenerationDlg::timerUpdate()
   }
   else
   {
-    meshPointIncrement = (cloud_with_normals.size() / 2);
+    meshPointIncrement = (cloud_with_normals.size() / 60);
     moveHandToNextPose();
   }
 }
