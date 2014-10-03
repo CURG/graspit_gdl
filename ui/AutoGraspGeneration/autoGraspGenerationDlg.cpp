@@ -820,7 +820,6 @@ void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 
 void AutoGraspGenerationDlg::moveHandToNextPose()
 {
-
   pcl::PointNormal pointNormalInBodyCoord = this->cloud_with_normals.at(currentMeshPointIndex);
 
   double x = pointNormalInBodyCoord.x;
@@ -842,7 +841,15 @@ void AutoGraspGenerationDlg::moveHandToNextPose()
   vec3 U = D * vec3(0,1,0) * D;
 
   transf worldToObject = mPlanner->getTargetState()->getObject()->getTran();
-  transf meshPointToApproachTran = translate_transf(vec3(-150*normal_x, -150*normal_y, -150*normal_z));
+  transf meshPointToApproachTran;
+  if (rob->getName().toStdString() == "MicoGripper")
+    meshPointToApproachTran = translate_transf(vec3(-150*normal_x, -150*normal_y, -150*normal_z));
+  else if (rob->getName().toStdString() == "NewBarrett")
+    meshPointToApproachTran = translate_transf(vec3(150*normal_x, 150*normal_y, 150*normal_z));
+  else {
+    DBGA("Hand type not supported!");
+    return;
+  }
   transf orientHand = rotXYZ(0,-M_PI/2.0,0) * coordinate_transf(position(x,y,z),D,U) ;
 
   mHand->setTran( orientHand * meshPointToApproachTran*worldToObject );
@@ -1208,7 +1215,7 @@ void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
 
   autoGenStatusLbl->setText("Ready...");
 
-  currentHand = 1;
+  currentHand = 0;
   currentModel = 0;
 
   DBGA("\nStarting with hand: " << handXMLNames[currentHand].toStdString());
