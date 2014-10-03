@@ -88,7 +88,7 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-  millisecondsPerMeshPoint = 30000;
+  millisecondsPerMeshPoint = 3000;
   meshPointIncrement = 0;
   currentMeshPointIndex = 0;
   grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
@@ -697,7 +697,6 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
     fprintf(stderr,"Too many graspable bodies!\n");
     return;
   }
-
   this->setMembers(world->getCurrentHand(), world->getGB(0));
   
   // Set all objects in the world to be rubber (just in case default set doesn't work)
@@ -812,10 +811,11 @@ void AutoGraspGenerationDlg::generateHandPoses()
 void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 {
   if (obj != NULL) {
-    world->destroyElement(obj, false);
+    world->destroyElement(obj, true);
   }
-  DBGA("Importing new model: " << modelXMLNames[modelId].toStdString());
+
   obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
+  DBGA("Importing new model: " << modelXMLNames[modelId].toStdString());
 }
 
 void AutoGraspGenerationDlg::moveHandToNextPose()
@@ -910,7 +910,7 @@ void AutoGraspGenerationDlg::timerUpdate()
   std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
   std::cout << "currentHandPositionIndex " << currentMeshPointIndex << std::endl;
 
-  if (cloud_with_normals.size() < currentMeshPointIndex)
+  if (cloud_with_normals.size() <= currentMeshPointIndex)
   {
     stopPlanner();
     saveGrasps();
@@ -929,7 +929,8 @@ void AutoGraspGenerationDlg::timerUpdate()
     delete mPlanner;
     mPlanner = NULL;
 
-    updateStatus();
+    //updateStatus();
+    // Disabled because causing seg-faults
 
     plannerInit_clicked();
     startPlanner();
@@ -937,7 +938,7 @@ void AutoGraspGenerationDlg::timerUpdate()
   }
   else
   {
-    meshPointIncrement = (cloud_with_normals.size() / 60);
+    meshPointIncrement = (cloud_with_normals.size() / 2);
     moveHandToNextPose();
   }
 }
@@ -1215,7 +1216,7 @@ void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
 
   autoGenStatusLbl->setText("Ready...");
 
-  currentHand = 0;
+  currentHand = 1;
   currentModel = 0;
 
   DBGA("\nStarting with hand: " << handXMLNames[currentHand].toStdString());
