@@ -693,11 +693,11 @@ void AutoGraspGenerationDlg::plannerInit_clicked()
       fprintf(stderr,"Current hand has no EigenGrasp information!\n");
       return;
   }
-  if (world->getNumGB() > 1) {
-    fprintf(stderr,"Too many graspable bodies!\n");
-    return;
-  }
-  this->setMembers(world->getCurrentHand(), world->getGB(0));
+  //if (world->getNumGB() > 1) {
+  //  fprintf(stderr,"Too many graspable bodies!\n");
+  //  return;
+  //}
+  this->setMembers(world->getCurrentHand(), world->getGB(world->getNumGB()-1));
   
   // Set all objects in the world to be rubber (just in case default set doesn't work)
   for (int i=0;i<world->getNumSelectedBodies();i++)
@@ -811,11 +811,12 @@ void AutoGraspGenerationDlg::generateHandPoses()
 void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 {
   if (obj != NULL) {
-    world->destroyElement(obj, true);
+    DBGA("Attempting to remove obj from scene");
+    world->removeElementFromSceneGraph(obj);
+    //world->destroyElement(obj, true);
   }
-
-  obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
   DBGA("Importing new model: " << modelXMLNames[modelId].toStdString());
+  obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
 }
 
 void AutoGraspGenerationDlg::moveHandToNextPose()
@@ -889,7 +890,16 @@ void AutoGraspGenerationDlg::saveGrasps()
         fprintf(f,"energy: %f\n", mPlanner->getGrasp(i)->getEnergy());
 
         mPlanner->getGrasp(i)->writeToFile(f);
-        fprintf(f,"\n");
+
+        mPlanner->getGrasp(i)->execute(mPlanner->getHand());
+        double jointVals[mPlanner->getHand()->getNumJoints()];
+        mPlanner->getHand()->getJointValues(jointVals);
+
+        fprintf(f, "jointValues: ");
+        for (int j=0; j < mPlanner->getHand()->getNumJoints(); j++) {
+            fprintf(f, "%f ", jointVals[j]);
+        }
+        fprintf(f,"\n\n");
     }
     fclose(f);
 
@@ -1150,11 +1160,11 @@ void AutoGraspGenerationDlg::loadHandsDirButton_clicked()
 }
 
 
-void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
+void AutoGraspGenerationDlg::loadModelsAndHandsButton_clicked()
 {
 
   autoGenStatusLbl->setText("Collecting models and hands...");
-
+  loadModelsAndHandsButton->setEnabled(FALSE);
 
   struct dirent *parentEntry; 
   DIR *parentDir;
@@ -1216,7 +1226,7 @@ void AutoGraspGenerationDlg::startAutoGraspButton_clicked()
 
   autoGenStatusLbl->setText("Ready...");
 
-  currentHand = 1;
+  currentHand = 0;
   currentModel = 0;
 
   DBGA("\nStarting with hand: " << handXMLNames[currentHand].toStdString());

@@ -200,7 +200,8 @@ protected:
   //! Asks all chains to set the given joint values, then update the position of all links
   inline void setJointValuesAndUpdate(const double* jointVals);
   //! Gets the current joint values from the chains
-  inline void getJointValues(double* jointVals) const;
+  // inline void getJointValues(double* jointVals) const;
+  // moved the above code to public
   //! Informs the dof's that certain values have been set.
   inline void updateDofVals(double *dofVals);
   //! Main function for obtaining joint values from the dofs given desired dof values
@@ -291,6 +292,9 @@ protected:
 									    double* H, double *g, int &hcn);
 
   //-------------------------get position and pose information------------------------
+
+  //! Gets the current joint values from the chains
+  inline void getJointValues(double* jointVals) const;
 
   /*! Return the transform which describes the world pose of the robot base
       frame with respect to the world coordinate system. */
