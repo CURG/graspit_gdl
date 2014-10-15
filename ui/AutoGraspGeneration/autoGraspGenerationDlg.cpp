@@ -91,7 +91,7 @@ void AutoGraspGenerationDlg::init()
   millisecondsPerMeshPoint = 30000;
   meshPointIncrement = 0;
   currentMeshPointIndex = 0;
-  grasp_dir =  "/home/jared/grasp_deep_learning/graspit_gdl/saved_grasps/";
+  grasp_dir = QString(getenv("GDL_GRASPS_PATH"));
 
   seedHandMovementTimer = new QTimer(this);
   connect(seedHandMovementTimer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
@@ -153,7 +153,7 @@ void AutoGraspGenerationDlg::init()
   handsDirName = QString(getenv("GRASPIT"))+QString("/models/robots");
   handsDirLbl->setText(handsDirName);
 
-  modelsDirName = QString(getenv("GRASPIT"))+QString("/models/object_database");
+  modelsDirName = QString(getenv("GDL_OBJECT_PATH"));
   modelsDirLbl->setText(modelsDirName);
 
   plannerTypeBox->setEnabled(FALSE);
@@ -1139,7 +1139,7 @@ void AutoGraspGenerationDlg::inputLoadButton_clicked()
 
 void AutoGraspGenerationDlg::loadModelsDirButton_clicked()
 {
-  QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GRASPIT"))+QString("/models/object_database")) );
+  QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GDL_OBJECT_PATH")) );
   if ( fn.isEmpty() ) {
     return;
   }
