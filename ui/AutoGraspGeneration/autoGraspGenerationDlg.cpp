@@ -91,7 +91,7 @@ void AutoGraspGenerationDlg::init()
   millisecondsPerMeshPoint = 30000;
   meshPointIncrement = 0;
   currentMeshPointIndex = 0;
-  grasp_dir = QString(getenv("GDL_GRASPS_PATH"));
+  //grasp_dir = QString(getenv("GDL_GRASPS_PATH"));
 
   seedHandMovementTimer = new QTimer(this);
   connect(seedHandMovementTimer,SIGNAL(timeout()), this, SLOT(timerUpdate()));
@@ -899,8 +899,49 @@ void AutoGraspGenerationDlg::saveGrasps()
         for (int j=0; j < mPlanner->getHand()->getNumJoints(); j++) {
             fprintf(f, "%f ", jointVals[j]);
         }
-        fprintf(f,"\n\n");
+        fprintf(f,"\n");
+
+        fprintf(f, "virtual contacts: \n");
+        mPlanner->getGrasp(i)->getHand()->getGrasp();
+
+        int finger_count,l;
+        std::list<Contact *>::iterator cp;
+        std::list<Contact *> contactList;
+
+        Hand *hand = mPlanner->getGrasp(i)->getHand();
+
+        contactList = hand->getPalm()->getVirtualContacts();
+        for (cp=contactList.begin();cp!=contactList.end();cp++) {
+            VirtualContact *vc;
+            vc = (VirtualContact*) &cp;
+            position p = vc->getWorldLocation();
+            fprintf(f, "%f ", p.x());
+            fprintf(f, " " );
+            fprintf(f, "%f ", p.y());
+            fprintf(f, " " );
+            fprintf(f, "%f ", p.z());
+            fprintf(f, " \n " );
+        }
+
+        for(finger_count=0;finger_count<hand->getNumFingers();finger_count++) {
+            for (l=0;l<hand->getFinger(finger_count)->getNumLinks();l++) {
+                contactList = hand->getFinger(finger_count)->getLink(l)->getVirtualContacts();
+                for (cp=contactList.begin();cp!=contactList.end();cp++){
+                    VirtualContact *vc;
+                    vc = (VirtualContact*) &cp;
+                    position p = vc->getWorldLocation();
+                    fprintf(f, "%f ", p.x());
+                    fprintf(f, " " );
+                    fprintf(f, "%f ", p.y());
+                    fprintf(f, " " );
+                    fprintf(f, "%f ", p.z());
+                    fprintf(f, " \n " );
+                }
+            }
+        }
+        fprintf(f, " \n\n " );
     }
+
     fclose(f);
 
     std::cout << "saved grasps to: " << fullGraspPathAndFilename.c_str() << std::endl;
@@ -1137,16 +1178,16 @@ void AutoGraspGenerationDlg::inputLoadButton_clicked()
 
 //-------------------------------------------- Auto grasp planning -------------------------------------
 
-void AutoGraspGenerationDlg::loadModelsDirButton_clicked()
-{
-  QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GDL_OBJECT_PATH")) );
-  if ( fn.isEmpty() ) {
-    return;
-  }
-  modelsDirName = fn;
-  modelsDirLbl->setText(modelsDirName);
+//void AutoGraspGenerationDlg::loadModelsDirButton_clicked()
+//{
+//  QString fn( QFileDialog::getExistingDirectory(this, QString(), QString(getenv("GDL_OBJECT_PATH")) );
+//  if ( fn.isEmpty() ) {
+//    return;
+//  }
+//  modelsDirName = fn;
+//  modelsDirLbl->setText(modelsDirName);
 
-}
+//}
 
 void AutoGraspGenerationDlg::loadHandsDirButton_clicked()
 {

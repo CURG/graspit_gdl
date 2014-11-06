@@ -183,7 +183,7 @@ public slots:
 
     void loadModelsAndHandsButton_clicked();
     void loadHandsDirButton_clicked();
-    void startAutoGraspButton_clicked();
+    //void startAutoGraspButton_clicked();
 
 
 
