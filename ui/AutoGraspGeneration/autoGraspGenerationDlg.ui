@@ -840,6 +840,19 @@
     </property>
    </widget>
   </widget>
+  <widget class="QPushButton" name="saveGraspsButton">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>430</y>
+     <width>261</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>SAVE GRASPS!!!</string>
+   </property>
+  </widget>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <pixmapfunction>qPixmapFromMimeSource</pixmapfunction>
@@ -877,6 +890,22 @@
    <signal>clicked()</signal>
    <receiver>autoGraspGenerationDlgUI</receiver>
    <slot>loadModelsDirButton_clicked()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>20</x>
+     <y>20</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>saveGraspsButton</sender>
+   <signal>clicked()</signal>
+   <receiver>autoGraspGenerationDlgUI</receiver>
+   <slot>saveGraspsButton_clicked()</slot>
    <hints>
     <hint type="sourcelabel">
      <x>20</x>
