@@ -813,7 +813,8 @@ void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
   if (obj != NULL) {
     DBGA("Attempting to remove obj from scene");
     world->removeElementFromSceneGraph(obj);
-    //world->destroyElement(obj, true);
+    sleep(1);
+    world->destroyElement(obj, true);
   }
   DBGA("Importing new model: " << modelXMLNames[modelId].toStdString());
   obj = world->importBody("GraspableBody", modelXMLNames[modelId]);
@@ -867,7 +868,7 @@ void AutoGraspGenerationDlg::saveGrasps()
 
     std::stringstream ss;
     //folder to save grasps
-    ss << grasp_dir;
+    ss << grasp_dir << "/";
 
     //subfolder for the object/hand we are grasping
     ss << mPlanner->getTargetState()->getObject()->getName().toStdString().c_str();
@@ -981,11 +982,13 @@ void AutoGraspGenerationDlg::timerUpdate()
     saveGrasps();
 
     // New object
+    sleep(1);
     currentModel++;
     if (currentModel < modelXMLNames.size())
       chooseNewScene(currentHand, currentModel); 
     else 
       return;
+    sleep(1);
 
     DBGA("Model:" << currentModel);
 
@@ -993,11 +996,13 @@ void AutoGraspGenerationDlg::timerUpdate()
     world->setCurrentPlanner(NULL);
     delete mPlanner;
     mPlanner = NULL;
+    sleep(1);
 
     //updateStatus();
     // Disabled because causing seg-faults
 
     plannerInit_clicked();
+    sleep(1);
     startPlanner();
 
   }
