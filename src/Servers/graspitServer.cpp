@@ -225,6 +225,10 @@ ClientSocket::readRobotIndList(std::vector<Robot *> &robVec)
 void
 ClientSocket::readClient()
 {
+
+  graspItGUI->startStuffHere();
+  return;
+
   int i,numData,numBodies,numRobots;
   double time;
   std::vector<Body *> bodyVec;

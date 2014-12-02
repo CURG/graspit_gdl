@@ -70,6 +70,7 @@ class GraspItGUI
   IVmgr *getIVmgr() const {return ivmgr;}
   
   void startMainLoop();
+  void startStuffHere();
   void exitMainLoop();
 
   static GraspItGUI * getInstance();

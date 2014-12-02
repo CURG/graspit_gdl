@@ -159,6 +159,8 @@ public slots:
 	void tendonVisibleCheckBox_toggled( bool vis);
     //--------------
     void bciActionView();
+    //-----
+    void startStuff();
 };
 
 #endif

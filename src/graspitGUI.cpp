@@ -152,10 +152,14 @@ GraspItGUI::processArgs(int argc, char** argv)
   while((c=getopt(argc, argv, "r:w:o:b:")) != EOF) {
     switch(c) {
     case 'r':
-      filename = graspitRoot + QString("/models/robots/")+
+      /*filename = graspitRoot + QString("/models/robots/")+
 	QString(optarg) + QString("/") + QString(optarg) + QString(".cfg");
       if (ivmgr->getWorld()->importRobot(filename)==NULL)
 	++errflag;
+      break;*/
+      filename = QString(optarg);
+      if (ivmgr->getWorld()->importRobot(filename)==NULL)
+  ++errflag;
       break;
     case 'w':
       filename = graspitRoot + QString("/worlds/")+ QString(optarg) +
@@ -166,8 +170,7 @@ GraspItGUI::processArgs(int argc, char** argv)
 	mainWindow->mUI->worldBox->setTitle(filename);
       break;
     case 'o':
-      filename = graspitRoot + QString("/models/objects/")+ QString(optarg) +
-	QString(".iv");
+      filename = QString(optarg);
       if (!ivmgr->getWorld()->importBody("GraspableBody",filename))
 	++errflag;
       break;
@@ -198,9 +201,16 @@ GraspItGUI::startMainLoop()
 {	
   SoQt::show(mainWindow->mWindow);
   mainWindow->setMainWorld(ivmgr->getWorld());
-  mainWindow->mWindow->resize(QSize(1070,937));  
+  mainWindow->mWindow->resize(QSize(1070,937));
   SoQt::mainLoop();
-}  
+}
+
+void
+GraspItGUI::startStuffHere()
+{
+  sleep(5);
+  mainWindow->startStuff();
+}
 
 /*!
   Exits the Qt event loop.

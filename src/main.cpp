@@ -89,8 +89,10 @@ int main(int argc, char **argv)
   app.closeSplash();
   QApplication::restoreOverrideCursor();
 
+
   if (!gui.terminalFailure()) {
 	  gui.startMainLoop();
   }
+
   return 0;
 }

@@ -128,6 +128,9 @@ private:
 
     QString modelsDirName;
     QString handsDirName;
+    QString singleHandName; 
+    QString singleModelName;
+
     std::vector<QString> modelXMLNames;
     std::vector<QString> handXMLNames;
     World *world;
@@ -182,8 +185,9 @@ public slots:
     void timerUpdate();
 
     void loadModelsDirButton_clicked();
-    void loadModelsAndHandsButton_clicked();
     void loadHandsDirButton_clicked();
+    void loadModelsAndHandsButton_clicked();
+    void loadModelFromCMDLine();
     void saveGraspsButton_clicked();
 
 

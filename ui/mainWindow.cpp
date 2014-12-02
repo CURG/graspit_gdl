@@ -86,6 +86,8 @@
 #include "BCI/bciService.h"
 #include "Servers/rosRPCZClient.h"
 
+#include <unistd.h>
+
 //------------------------------------ CONSTRUCTOR AND DESTRUCTOR -------------------------------------
 
 MainWindow::MainWindow(QWidget *parent) 
@@ -168,6 +170,8 @@ MainWindow::MainWindow(QWidget *parent)
 	QObject::connect(mUI->tendonNamesBox, SIGNAL(activated(int)), this, SLOT(tendonNamesBoxActivated(int)));
 	QObject::connect(mUI->tendonVisibleCheckBox, SIGNAL(toggled(bool)), this, SLOT(tendonVisibleCheckBox_toggled(bool)));  
     QObject::connect(mUI->bciViewAction, SIGNAL(triggered()), this, SLOT(bciActionView()));
+
+
 }
 
 /*!
@@ -213,6 +217,7 @@ void MainWindow::destroyChildren()
 void MainWindow::setMainWorld( World *w )
 {
   world = w;
+
   QObject::connect(world,SIGNAL(dynamicStepTaken()),this,SLOT(updateTimeReadout()));
   QObject::connect(world,SIGNAL(dynamicStepTaken()),graspItGUI->getIVmgr(),SLOT(drawDynamicForces())); 
   QObject::connect(world,SIGNAL(dynamicsError(const char *)),this,SLOT(showDynamicsError(const char *)));
@@ -1341,3 +1346,18 @@ void MainWindow::bciActionView()
 
 }
 
+void MainWindow::startStuff()
+{
+  AutoGraspGenerationDlg *dlg = new AutoGraspGenerationDlg(mWindow);
+  dlg->setWorld(world);
+  dlg->setAttribute(Qt::WA_ShowModal, false);
+  dlg->setAttribute(Qt::WA_DeleteOnClose, true);
+  
+  dlg->show();
+
+  dlg->loadModelFromCMDLine();
+
+  dlg->plannerInit_clicked();
+  dlg->plannerStart_clicked();
+
+}

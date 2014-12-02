@@ -88,7 +88,7 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-  millisecondsPerMeshPoint = 30000;
+  millisecondsPerMeshPoint = 3000;
   meshPointIncrement = 0;
   currentMeshPointIndex = 0;
   grasp_dir = getenv("GDL_GRASPS_PATH");
@@ -822,6 +822,7 @@ void AutoGraspGenerationDlg::chooseNewScene(int handId, int modelId)
 
 void AutoGraspGenerationDlg::moveHandToNextPose()
 {
+
   pcl::PointNormal pointNormalInBodyCoord = this->cloud_with_normals.at(currentMeshPointIndex);
 
   double x = pointNormalInBodyCoord.x;
@@ -844,14 +845,14 @@ void AutoGraspGenerationDlg::moveHandToNextPose()
 
   transf worldToObject = mPlanner->getTargetState()->getObject()->getTran();
   transf meshPointToApproachTran;
-  if (rob->getName().toStdString() == "MicoGripper")
-    meshPointToApproachTran = translate_transf(vec3(-150*normal_x, -150*normal_y, -150*normal_z));
-  else if (rob->getName().toStdString() == "NewBarrett")
-    meshPointToApproachTran = translate_transf(vec3(150*normal_x, 150*normal_y, 150*normal_z));
-  else {
-    DBGA("Hand type not supported!");
-    return;
-  }
+  //if (rob->getName().toStdString() == "MicoGripper")
+  //  meshPointToApproachTran = translate_transf(vec3(-150*normal_x, -150*normal_y, -150*normal_z));
+  //else if (rob->getName().toStdString() == "NewBarrett")
+  meshPointToApproachTran = translate_transf(vec3(150*normal_x, 150*normal_y, 150*normal_z));
+  //else {
+  //  DBGA("Hand type not supported!");
+  //  return;
+  //}
   transf orientHand = rotXYZ(0,-M_PI/2.0,0) * coordinate_transf(position(x,y,z),D,U) ;
 
   mHand->setTran( orientHand * meshPointToApproachTran*worldToObject );
@@ -875,7 +876,6 @@ void AutoGraspGenerationDlg::saveGrasps()
 
 
     std::string fullGraspPath = ss.str();
-
     ss << "/grasps";
     ss << ".txt";
 
@@ -884,7 +884,8 @@ void AutoGraspGenerationDlg::saveGrasps()
     boost::filesystem3::create_directories(fullGraspPath);
 
     FILE *f = fopen(fullGraspPathAndFilename.c_str(),"w");
-    fprintf(f,"virtual_contacts: %s\n\n", rob->getVirtualContactsFile().toStdString().c_str());
+
+    fprintf(f,"virtual_contacts: %s\n\n", mPlanner->getHand()->getVirtualContactsFile().toStdString().c_str());
     for (int i=0; i<mPlanner->getListSize(); i++)
     {
         fprintf(f,"graspId: %d\n", i);
@@ -924,36 +925,6 @@ void AutoGraspGenerationDlg::saveGrasps()
         std::list<Contact *>::iterator cp;
         std::list<Contact *> contactList;
 
-//        Hand *hand = mPlanner->getGrasp(i)->getHand();
-//        contactList = hand->getPalm()->getVirtualContacts();
-//        for (cp=contactList.begin();cp!=contactList.end();cp++) {
-//            VirtualContact *vc;
-//            vc = (VirtualContact*) &cp;
-//            position p = vc->getWorldLocation();
-//            fprintf(f, "%f ", p.x());
-//            fprintf(f, " " );
-//            fprintf(f, "%f ", p.y());
-//            fprintf(f, " " );
-//            fprintf(f, "%f ", p.z());
-//            fprintf(f, " \n " );
-//        }
-
-//        for(finger_count=0;finger_count<hand->getNumFingers();finger_count++) {
-//            for (l=0;l<hand->getFinger(finger_count)->getNumLinks();l++) {
-//                contactList = hand->getFinger(finger_count)->getLink(l)->getVirtualContacts();
-//                for (cp=contactList.begin();cp!=contactList.end();cp++){
-//                    VirtualContact *vc;
-//                    vc = (VirtualContact*) &cp;
-//                    position p = vc->getWorldLocation();
-//                    fprintf(f, "%f ", p.x());
-//                    fprintf(f, " " );
-//                    fprintf(f, "%f ", p.y());
-//                    fprintf(f, " " );
-//                    fprintf(f, "%f ", p.z());
-//                    fprintf(f, " \n " );
-//                }
-//            }
-//        }
         fprintf(f, " \n\n " );
     }
 
@@ -975,12 +946,19 @@ void AutoGraspGenerationDlg::timerUpdate()
   std::cout << "timer update called" << std::endl;
   std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
   std::cout << "currentHandPositionIndex " << currentMeshPointIndex << std::endl;
-
+  
   if (cloud_with_normals.size() <= currentMeshPointIndex)
   {
+    std::cout << "Stopping!" << std::endl;
     stopPlanner();
+    std::cout << "Stopping!" << std::endl;
     saveGrasps();
+    std::cout << "DONE!" << std::endl;
 
+    sleep(2);
+    assert(FALSE);
+
+    /*
     // New object
     sleep(1);
     currentModel++;
@@ -1003,12 +981,12 @@ void AutoGraspGenerationDlg::timerUpdate()
 
     plannerInit_clicked();
     sleep(1);
-    startPlanner();
+    startPlanner();*/
 
   }
   else
   {
-    meshPointIncrement = (cloud_with_normals.size() / 60);
+    meshPointIncrement = (cloud_with_normals.size() / 3);
     moveHandToNextPose();
   }
 }
@@ -1217,6 +1195,26 @@ void AutoGraspGenerationDlg::loadHandsDirButton_clicked()
   handsDirName = fn;
   handsDirLbl->setText(handsDirName);
 
+}
+
+
+void AutoGraspGenerationDlg::loadModelFromCMDLine()
+{
+  loadModelsAndHandsButton->setEnabled(FALSE);
+  singleHandName = QString(getenv("GDL_GRASPIT_HAND_PATH"));
+  singleModelName = QString(getenv("GDL_GRASPIT_MODEL_PATH"));
+  //singleHandName = QString("/home/jared/grasp_deep_learning/graspit_gdl/models/robots/NewBarrett/NewBarrett.xml");
+  //singleModelName = QString("/home/jared/grasp_deep_learning/models/big_bird_models_processed/zilla_night_black_heat/zilla_night_black_heat.xml");
+
+
+  DBGA("\nUsing hand: " << singleHandName.toStdString());
+  DBGA("Using model: " << singleModelName.toStdString());
+  DBGA("\n");
+
+  //rob = world->importRobot(singleHandName);
+  //obj = world->importBody("GraspableBody", singleModelName);
+
+  plannerInitButton->setEnabled(TRUE);
 }
 
 
