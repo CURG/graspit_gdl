@@ -86,6 +86,7 @@ private:
 
     //current meshpoint we are using to position the seed hand
     int currentMeshPointIndex;
+    int currentIter;
 
     QTimer *seedHandMovementTimer;
 

@@ -30,8 +30,10 @@ def run_subprocess(cmd_string):
 def run_loop():
 
 	models = os.listdir(PROCESSED_OUTPUT_DIR)
-    
+	i = 0
 	for model_name in models:
+		i = i + 1
+
 		model_path = PROCESSED_OUTPUT_DIR + '/' + model_name + '/' + model_name + '.xml'
 
 		################################
@@ -42,7 +44,7 @@ def run_loop():
 		#cmd +=  raw_model_dir + "textured_meshes/optimized_tsdf_texture_mapped_mesh.mtl "
 		#cmd +=  processed_model_dir
 		
-		print "Num: %s" % (iterNum)
+		print "Iter: %s ; object %s / %s" % (iterNum, i, len(models))
 
 		t1 = Thread(target=run_subprocess, args=(cmd, ))
 		t1.start()
@@ -60,7 +62,7 @@ def run_loop():
 		#time.sleep(35 * 60)
 
 def move_grasps(iterNum):
-	cmd = "mv " + GDL_GRASPS_PATH + "/* " + GDL_GRASPS_PATH + "-loop-" + str(iterNum)
+	cmd = "mv " + GDL_GRASPS_PATH + " " + GDL_GRASPS_PATH + "-loop-" + str(iterNum)
 	run_subprocess(cmd)
 
 iterNum = 1

@@ -24,6 +24,8 @@
 //######################################################################
 
 #include <algorithm>
+#include <cstdlib>
+#include <ctime>
 
 #include "autoGraspGenerationDlg.h"
 
@@ -88,8 +90,10 @@ void AutoGraspGenerationDlg::init()
 { 
 
 
-  millisecondsPerMeshPoint = 3000;
+  millisecondsPerMeshPoint = 30000;
   meshPointIncrement = 0;
+  currentIter = 0;
+  srand(time(NULL));
   currentMeshPointIndex = 0;
   grasp_dir = getenv("GDL_GRASPS_PATH");
 
@@ -685,7 +689,7 @@ void AutoGraspGenerationDlg::plannerComplete()
 
 
 void AutoGraspGenerationDlg::plannerInit_clicked()
-{  
+{ 
 
   // Set up the world with the hand
   assert(world->getCurrentHand());
@@ -803,7 +807,7 @@ void AutoGraspGenerationDlg::generateHandPoses()
     //pcl::PointCloud<pcl::PointNormal> cloud_with_normals (new pcl::PointCloud<pcl::PointNormal>);
     pcl::concatenateFields (*cloud, *normals, cloud_with_normals);
 
-    currentMeshPointIndex =0;
+    currentMeshPointIndex = rand() % cloud_with_normals.size();
     //showNormals(mPlanner->getTargetState()->getObject(), cloud_with_normals);
 }
 
@@ -859,7 +863,7 @@ void AutoGraspGenerationDlg::moveHandToNextPose()
 
   // showSingleNormal(mPlanner->getTargetState()->getObject(), cloud_with_normals,currentHandPositionIndex );
 
-  currentMeshPointIndex+=meshPointIncrement;
+  //currentMeshPointIndex+=meshPointIncrement;
 
 }
 
@@ -943,11 +947,14 @@ void AutoGraspGenerationDlg::plannerReset_clicked()
 
 void AutoGraspGenerationDlg::timerUpdate()
 {
+  currentMeshPointIndex = rand() % cloud_with_normals.size();
+  currentIter += 1;
+
   std::cout << "timer update called" << std::endl;
   std::cout << "cloud_with_normals.size() " << cloud_with_normals.size() << std::endl;
   std::cout << "currentHandPositionIndex " << currentMeshPointIndex << std::endl;
-  
-  if (cloud_with_normals.size() <= currentMeshPointIndex)
+  if (currentIter > 10)
+  //if (cloud_with_normals.size() <= currentMeshPointIndex)
   {
     std::cout << "Stopping!" << std::endl;
     stopPlanner();
@@ -986,7 +993,7 @@ void AutoGraspGenerationDlg::timerUpdate()
   }
   else
   {
-    meshPointIncrement = (cloud_with_normals.size() / 3);
+    meshPointIncrement = (cloud_with_normals.size() / 60);
     moveHandToNextPose();
   }
 }
